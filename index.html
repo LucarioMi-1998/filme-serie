@@ -63,7 +63,7 @@
     }
     .btn-icon:hover { filter: brightness(1.05); }
 
-    /* ✅ Filter löschen – länglich, rot */
+    /* Filter löschen – rot */
     .btn-clear-filters{
       border: 1px solid rgba(255,255,255,0.18);
       background: linear-gradient(180deg, var(--danger-1), var(--danger-2) 45%, var(--danger-3));
@@ -114,7 +114,7 @@
     }
     .corner-count.muted{ opacity: .55; }
 
-    /* ---------- Cards ---------- */
+    /* ---------- Cards (Desktop Liste) ---------- */
     .card {
       background: rgba(18,31,20,0.92); border-radius: 18px; border: 1px solid var(--line);
       padding: 14px; margin-bottom: 12px; display: flex; gap: 12px; align-items: flex-start;
@@ -150,10 +150,8 @@
     .stat-title{ font-size: 12px; font-weight: 800; color: var(--muted); }
     .stat-value{ margin-top: 4px; font-size: 20px; font-weight: 900; color: var(--white); }
 
-    /* ✅ FIX: Mobile-Stats standardmäßig ausblenden (Web/Desktop) */
-    #statsBoxMobile{
-      display: none;
-    }
+    /* ✅ Mobile-Stats standardmäßig ausblenden (Desktop/Web) */
+    #statsBoxMobile{ display:none; }
 
     /* ---------- Modal ---------- */
     .modal-backdrop {
@@ -171,13 +169,38 @@
     .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
     .modal-backdrop.hidden { display: none; }
 
-    /* Suche Toggle */
     .toggle {
       display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800;
       background: rgba(255,255,255,0.06); border: 1px solid var(--line);
       padding: 8px 10px; border-radius: 10px; margin-top: 6px;
     }
     .toggle input { width: 18px; height: 18px; accent-color: #8fb56a; cursor: pointer; }
+
+    /* ===== Mobile: Einträge direkt unter Kategorie anzeigen ===== */
+    .category-panel {
+      margin-top: 8px;
+      margin-bottom: 10px;
+      padding-left: 6px;
+      display: grid;
+      gap: 8px;
+    }
+    .category-panel .mini-card {
+      border: 1px solid var(--line);
+      background: rgba(12,20,14,0.95);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    }
+    .category-panel .mini-title {
+      font-weight: 900;
+      font-size: 15px;
+    }
+    .category-panel .mini-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
 
     /* =========================================================
        ========== MOBILE ==========
@@ -200,11 +223,12 @@
 
       /* ✅ nur mobil sichtbar */
       #statsBoxMobile{
-        display: grid;
-        margin-top: 0;
-        margin-bottom: 14px;
+        display:grid;
+        margin-top:0;
+        margin-bottom:14px;
       }
 
+      /* Floating Buttons */
       #addEntryBtn{
         position:fixed; top:14px; right:14px; z-index:90; width:58px; height:58px;
         font-size:30px; color:var(--white);
@@ -218,16 +242,18 @@
         box-shadow: 0 14px 30px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.15);
       }
 
+      /* Filter löschen nur sichtbar wenn aktiv */
       #clearFiltersBtn{
         position:fixed; top:18px; right:154px; z-index:90;
-        padding: 10px 12px;
-        font-size: 12px; font-weight: 900;
-        border-radius: 12px;
-        height: 50px;
-        display: flex; align-items: center; justify-content: center;
+        padding:10px 12px;
+        font-size:12px; font-weight:900;
+        border-radius:12px;
+        height:50px;
+        display:flex; align-items:center; justify-content:center;
         box-shadow: 0 14px 30px rgba(0,0,0,0.6);
       }
 
+      /* Kategorien 1 pro Zeile */
       #categoryList{
         display:grid; grid-template-columns:1fr; gap:10px; margin-top:6px;
       }
@@ -236,7 +262,7 @@
         width:100%; border-radius:16px; padding:16px 14px; padding-right:48px;
         font-size:17px; min-height:58px; display:flex; align-items:center; justify-content:flex-start;
       }
-      .category-button.root .chev{ display:block; font-size:12px; right:14px; }
+      .category-button.root .chev{ font-size:12px; right:14px; }
       .corner-count{ top:12px; right:38px; font-size:13px; }
 
       .category-button.sub,
@@ -255,6 +281,8 @@
         right:38px; top:12px; font-size:12px;
       }
 
+      /* ✅ Mobil: große Liste unten weg */
+      #entriesList { display:none !important; }
       #entriesTitle,#entriesCount{ display:none; }
       .form-grid{ grid-template-columns:1fr !important; }
 
@@ -268,7 +296,7 @@
 <body>
 
   <div class="sidebar" id="sidebar">
-    <!-- ✅ Mobile Stats -->
+    <!-- Mobile Stats -->
     <div id="statsBoxMobile" class="stats">
       <div class="stat-card">
         <div class="stat-title">Geschaut – Filme</div>
@@ -766,9 +794,11 @@
       updateClearFiltersButton();
     }
 
+    // ✅ Kategorien rendern + mobil inline Einträge
     function renderCategories() {
       categoryListEl.innerHTML = "";
       const roots = categories.filter(c => c.parentId == null);
+      const isMobile = window.matchMedia("(max-width: 800px)").matches;
 
       function countEntriesForCategory(catId) {
         const allowedIds = new Set();
@@ -778,6 +808,44 @@
         }
         collect(catId);
         return entries.filter(e => allowedIds.has(e.categoryId)).length;
+      }
+
+      function renderInlineEntries(catId, parentEl){
+        const list = entries.filter(e => e.categoryId === catId);
+
+        const panel = document.createElement("div");
+        panel.className = "category-panel";
+
+        if(list.length === 0){
+          const empty = document.createElement("div");
+          empty.className = "muted";
+          empty.textContent = "Keine Einträge.";
+          panel.appendChild(empty);
+          parentEl.appendChild(panel);
+          return;
+        }
+
+        list.forEach(entry => {
+          const mini = document.createElement("div");
+          mini.className = "mini-card";
+          mini.innerHTML = `
+            <div class="mini-title">${entry.title}</div>
+            <div class="mini-meta">
+              ${formatTypeLabel(entry.type)} · ${entry.status.replace("_"," ")}
+              ${
+                entry.status==="am_schauen"
+                  ? ((entry.type==="serie"||entry.type==="anime")
+                      ? ` · S${entry.season ?? "?"}E${entry.episode ?? "?"}`
+                      : (entry.minutes ? ` · ${entry.minutes} min` : ""))
+                  : ""
+              }
+            </div>
+          `;
+          mini.addEventListener("click", () => openEditModal(entry));
+          panel.appendChild(mini);
+        });
+
+        parentEl.appendChild(panel);
       }
 
       roots.forEach(root => {
@@ -796,7 +864,6 @@
           else expandedRoots.add(root.id);
           selectedCategoryId = root.id;
           renderCategories();
-          renderEntries();
           updateClearFiltersButton();
         });
         categoryListEl.appendChild(rootBtn);
@@ -822,22 +889,26 @@
 
           childBtn.addEventListener("click", (e) => {
             e.stopPropagation();
+
             if (childHasKids) {
               if (expandedSubRoots.has(child.id)) expandedSubRoots.delete(child.id);
               else expandedSubRoots.add(child.id);
               selectedCategoryId = child.id;
               renderCategories();
-              renderEntries();
               updateClearFiltersButton();
               return;
             }
+
             selectedCategoryId = child.id;
             renderCategories();
-            renderEntries();
             updateClearFiltersButton();
           });
 
           categoryListEl.appendChild(childBtn);
+
+          if (isMobile && !childHasKids && child.id === selectedCategoryId) {
+            renderInlineEntries(child.id, categoryListEl);
+          }
 
           if (childHasKids && isChildExpanded) {
             const genres = categories.filter(g => g.parentId === child.id);
@@ -856,11 +927,14 @@
                 ev.stopPropagation();
                 selectedCategoryId = gen.id;
                 renderCategories();
-                renderEntries();
                 updateClearFiltersButton();
               });
 
               categoryListEl.appendChild(genBtn);
+
+              if (isMobile && gen.id === selectedCategoryId) {
+                renderInlineEntries(gen.id, categoryListEl);
+              }
             });
           }
         });
@@ -890,7 +964,14 @@
       statDokusMobile.textContent = dokus;
     }
 
+    // ✅ Desktop Liste rendern, mobil NICHT (mobil passiert alles in renderCategories)
     function renderEntries() {
+      const isMobile = window.matchMedia("(max-width: 800px)").matches;
+      if(isMobile){
+        updateClearFiltersButton();
+        return;
+      }
+
       let visibleEntries = entries;
       const activeCategoryId = searchCategoryId != null ? searchCategoryId : selectedCategoryId;
 

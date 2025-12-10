@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Watchlist – Filme, Serien & Dokus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #020617;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ---------- Layout Desktop ---------- */
+    .sidebar {
+      width: 260px;
+      border-right: 1px solid #1f2937;
+      padding: 16px;
+      background: #020617;
+    }
+
+    .main {
+      flex: 1;
+      padding: 16px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      border: none;
+      background: #4f46e5;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .btn:hover { background: #4338ca; }
+
+    .btn-icon {
+      border: none;
+      background: #22c55e;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-icon:hover { background: #16a34a; }
+
+    .btn-danger { background: #b91c1c; }
+    .btn-danger:hover { background: #991b1b; }
+
+    .input, .select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .label {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .text-xs {
+      font-size: 10px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 8px 0 4px;
+    }
+
+    /* ---------- Category Buttons Desktop ---------- */
+    .category-button {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      position: relative; /* für Badge */
+    }
+
+    .category-button:hover { background: #111827; }
+    .category-button.active { background: #4f46e5; }
+
+    .category-button .chev {
+      font-size: 10px;
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    .category-button.root { font-weight: 600; }
+
+    /* Count rechts (Desktop) */
+    .count {
+      font-size: 10px;
+      color: #cbd5e1;
+      opacity: 0.9;
+      margin-left: auto;
+      padding-left: 8px;
+      flex-shrink: 0;
+    }
+    .count.muted { color: #64748b; }
+
+    /* Rotes Badge (Mobile-Stil) */
+    .badge-count {
+      display: none;
+      position: absolute;
+      right: 8px;
+      top: -6px;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: #dc2626;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #020617;
+    }
+
+    /* ---------- Cards ---------- */
+    .card {
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid #111827;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 13px;
+    }
+
+    .card img {
+      width: 64px;
+      height: 96px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #9ca3af;
+      margin-left: 6px;
+    }
+
+    .status {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 2px;
+    }
+
+    .small { font-size: 11px; color: #9ca3af; }
+
+    .muted {
+      font-size: 12px;
+      color: #6b7280;
+      font-style: italic;
+      margin-top: 6px;
+    }
+
+    .flex { display: flex; }
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .gap-8 { gap: 8px; }
+
+    .hidden { display: none; }
+
+    /* ---------- Modal ---------- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal {
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      padding: 16px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .modal-backdrop.hidden { display: none; }
+
+    /* =========================================================
+       =============== MOBILE NACH DEINEM MOCKUP ===============
+       ========================================================= */
+    @media (max-width: 800px) {
+      body { flex-direction: column; }
+
+      /* Sidebar wird zur oberen Kategorien-Seite */
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #1f2937;
+        padding: 18px 14px 8px;
+      }
+
+      h1 { display: none; } /* wie im Mockup - kein riesen Titel oben */
+
+      .main { padding: 10px 14px 18px; }
+
+      /* Plus oben rechts schwebend */
+      #addEntryBtn {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 90;
+        width: 56px;
+        height: 56px;
+        font-size: 28px;
+        background: #ffffff;
+        color: #000;
+        box-shadow: 0 10px 24px rgba(0,0,0,0.6);
+      }
+      #addEntryBtn:hover { background: #e5e7eb; }
+
+      /* "Alle Einträge" Button auf Mobile verstecken (du hast nur die 3 Reiter) */
+      #btnAll { display: none; }
+      .text-xs { display: none; }
+
+      /* Root-Pills */
+      .category-button.root {
+        background: #f8fafc;
+        color: #0b1220;
+        border-radius: 999px;
+        padding: 18px 22px;
+        font-size: 20px;
+        font-weight: 700;
+        justify-content: center;
+        margin: 14px 0;
+        min-height: 72px;
+      }
+      .category-button.root.active {
+        background: #e2e8f0;
+        color: #0b1220;
+      }
+      .category-button.root:hover {
+        background: #e2e8f0;
+      }
+
+      /* Badge auf Root anzeigen */
+      .category-button.root .badge-count { display: flex; }
+
+      /* Desktop-count/chev in Root ausblenden (Mockup nutzt Badge + Pfeil rechts) */
+      .category-button.root .count { display: none; }
+      .category-button.root .chev {
+        position: absolute;
+        right: 18px;
+        font-size: 16px;
+        opacity: 0.6;
+      }
+
+      /* Sub-Genres als kleinere Pills gleichen Stils */
+      .category-button.sub {
+        background: #0b1220;
+        border: 1px solid #1f2937;
+        color: #e5e7eb;
+        border-radius: 999px;
+        padding: 12px 18px;
+        font-size: 15px;
+        margin: 6px 0 10px;
+        min-height: 54px;
+      }
+      .category-button.sub.active {
+        background: #4f46e5;
+        border-color: transparent;
+      }
+
+      /* Genre count rechts als kleine Zahl */
+      .category-button.sub .count {
+        font-size: 12px;
+        opacity: 0.8;
+      }
+
+      /* Entries Header oben in main ausblenden (auf Mobile willst du erstmal Kategorien) */
+      #entriesTitle, #entriesCount { display: none; }
+
+      /* Form 1-spaltig */
+      .form-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Modal als Bottom Sheet */
+      .modal-backdrop { align-items: flex-end; }
+      .modal {
+        max-width: none;
+        width: 100%;
+        border-radius: 16px 16px 0 0;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+    <h1>Watchlist Kategorien</h1>
+
+    <button id="btnAll" class="category-button active">
+      <span>Alle Einträge</span>
+    </button>
+
+    <div class="text-xs">Kategorien</div>
+    <div id="categoryList"></div>
+  </div>
+
+  <div class="main">
+    <section class="mt-12">
+      <div class="flex-between">
+        <h2 id="entriesTitle">Alle Einträge</h2>
+        <div class="flex gap-8" style="align-items: center;">
+          <div id="entriesCount" class="small">0 Einträge</div>
+          <button id="addEntryBtn" class="btn-icon" title="Neuen Eintrag hinzufügen">+</button>
+        </div>
+      </div>
+      <div id="entriesList" class="mt-8"></div>
+    </section>
+  </div>
+
+  <!-- Modal für Neu/Bearbeiten -->
+  <div id="entryModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-header">
+        <div id="entryModalTitle" class="modal-title">Neuer Eintrag</div>
+        <button id="entryModalClose" class="modal-close" aria-label="Schließen">&times;</button>
+      </div>
+
+      <form id="entryForm">
+        <div class="form-grid">
+          <div>
+            <label class="label" for="entryTitle">Titel</label>
+            <input id="entryTitle" class="input" placeholder="z.B. The Expanse" />
+          </div>
+          <div>
+            <label class="label" for="entryType">Typ</label>
+            <select id="entryType" class="select">
+              <option value="film">Film</option>
+              <option value="serie">Serie</option>
+              <option value="doku">Dokumentation</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="entryStatus">Status</label>
+            <select id="entryStatus" class="select">
+              <option value="geplant">Geplant</option>
+              <option value="am_schauen">Am Schauen</option>
+              <option value="fertig">Fertig</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="entryCategory">Kategorie</label>
+            <select id="entryCategory" class="select">
+              <option value="">Bitte wählen…</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="entryRating">Bewertung (1–10)</label>
+            <input id="entryRating" type="number" min="1" max="10" class="input" />
+          </div>
+          <div style="grid-column: span 3;">
+            <label class="label" for="entryNote">Notiz</label>
+            <input id="entryNote" class="input" placeholder="z.B. Staffel 3 schwächer, aber tolles Worldbuilding" />
+          </div>
+        </div>
+
+        <!-- Zusatzfelder nur bei Status "am_schauen" -->
+        <div id="progressWrapper" class="form-grid mt-8 hidden">
+          <div id="seriesProgress" class="hidden" style="grid-column: span 2;">
+            <label class="label" for="entrySeason">Staffel</label>
+            <input id="entrySeason" type="number" min="1" class="input" placeholder="z.B. 2" />
+          </div>
+          <div id="seriesProgress2" class="hidden" style="grid-column: span 2;">
+            <label class="label" for="entryEpisode">Folge</label>
+            <input id="entryEpisode" type="number" min="1" class="input" placeholder="z.B. 5" />
+          </div>
+
+          <div id="movieProgress" class="hidden" style="grid-column: span 4;">
+            <label class="label" for="entryMinutes">Minuten (Fortschritt)</label>
+            <input id="entryMinutes" type="number" min="1" class="input" placeholder="z.B. 42" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="entryModalCancel" class="btn btn-danger" style="background:#111827;border:1px solid #1f2937;">
+            Abbrechen
+          </button>
+          <button type="submit" id="entryModalSubmit" class="btn">
+            Eintrag speichern
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      query,
+      orderBy,
+      updateDoc,
+      deleteDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuuUcEg8ZMBlvJKEQJaz9rtOnH81aEgfo",
+      authDomain: "film-serien.firebaseapp.com",
+      projectId: "film-serien",
+      storageBucket: "film-serien.firebasestorage.app",
+      messagingSenderId: "716417741276",
+      appId: "1:716417741276:web:3d19ab50c8effb64001f19"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const entriesCollection = collection(db, "entries");
+
+    const categories = [
+      { id: 1, name: "Filme",           parentId: null },
+      { id: 2, name: "Serien",          parentId: null },
+      { id: 3, name: "Dokumentationen", parentId: null },
+
+      { id: 10, name: "Drama",           parentId: 1 },
+      { id: 11, name: "Komödie",         parentId: 1 },
+      { id: 12, name: "Action",          parentId: 1 },
+      { id: 13, name: "Krimi",           parentId: 1 },
+      { id: 14, name: "Horror",          parentId: 1 },
+      { id: 15, name: "Science-Fiction", parentId: 1 },
+      { id: 16, name: "Fantasy",         parentId: 1 },
+      { id: 17, name: "Romance",         parentId: 1 },
+      { id: 18, name: "Abstrakt",        parentId: 1 },
+      { id: 19, name: "Thriller",        parentId: 1 },
+      { id: 20, name: "Musical",         parentId: 1 },
+      { id: 21, name: "Disney-Filme",    parentId: 1 },
+      { id: 22, name: "Pixar-Filme",     parentId: 1 },
+
+      { id: 30, name: "Drama",           parentId: 2 },
+      { id: 31, name: "Komödie",         parentId: 2 },
+      { id: 32, name: "Action",          parentId: 2 },
+      { id: 33, name: "Krimi",           parentId: 2 },
+      { id: 34, name: "Horror",          parentId: 2 },
+      { id: 35, name: "Science-Fiction", parentId: 2 },
+      { id: 36, name: "Fantasy",         parentId: 2 },
+      { id: 37, name: "Romance",         parentId: 2 },
+      { id: 38, name: "Abstrakt",        parentId: 2 },
+      { id: 39, name: "Thriller",        parentId: 2 },
+      { id: 40, name: "Musical",         parentId: 2 },
+
+      { id: 50, name: "Drama",           parentId: 3 },
+      { id: 51, name: "Komödie",         parentId: 3 },
+      { id: 52, name: "Action",          parentId: 3 },
+      { id: 53, name: "Krimi",           parentId: 3 },
+      { id: 54, name: "Horror",          parentId: 3 },
+      { id: 55, name: "Science-Fiction", parentId: 3 },
+      { id: 56, name: "Fantasy",         parentId: 3 },
+      { id: 57, name: "Romance",         parentId: 3 },
+      { id: 58, name: "Abstrakt",        parentId: 3 },
+      { id: 59, name: "Thriller",        parentId: 3 },
+      { id: 60, name: "Musical",         parentId: 3 }
+    ];
+
+    let entries = [];
+    let selectedCategoryId = null;
+    let editingEntryId = null;
+
+    // Start: alles eingeklappt (wie du wolltest)
+    let expandedRoots = new Set();
+
+    // DOM
+    const categoryListEl   = document.getElementById("categoryList");
+    const entryCategoryEl  = document.getElementById("entryCategory");
+    const entriesListEl    = document.getElementById("entriesList");
+    const entriesTitleEl   = document.getElementById("entriesTitle");
+    const entriesCountEl   = document.getElementById("entriesCount");
+    const btnAllEl         = document.getElementById("btnAll");
+    const addEntryBtn      = document.getElementById("addEntryBtn");
+
+    const entryForm        = document.getElementById("entryForm");
+    const entryTitle       = document.getElementById("entryTitle");
+    const entryType        = document.getElementById("entryType");
+    const entryStatus      = document.getElementById("entryStatus");
+    const entryRating      = document.getElementById("entryRating");
+    const entryNote        = document.getElementById("entryNote");
+    const entryModal       = document.getElementById("entryModal");
+    const entryModalTitle  = document.getElementById("entryModalTitle");
+    const entryModalClose  = document.getElementById("entryModalClose");
+    const entryModalCancel = document.getElementById("entryModalCancel");
+    const entryModalSubmit = document.getElementById("entryModalSubmit");
+
+    const progressWrapper  = document.getElementById("progressWrapper");
+    const seriesProgress   = document.getElementById("seriesProgress");
+    const seriesProgress2  = document.getElementById("seriesProgress2");
+    const movieProgress    = document.getElementById("movieProgress");
+    const entrySeason      = document.getElementById("entrySeason");
+    const entryEpisode     = document.getElementById("entryEpisode");
+    const entryMinutes     = document.getElementById("entryMinutes");
+
+    function getCategoryById(id) {
+      return categories.find(c => c.id === id) || null;
+    }
+
+    function getRootCategoryIdForType(type) {
+      if (type === "film") return 1;
+      if (type === "serie") return 2;
+      if (type === "doku") return 3;
+      return null;
+    }
+
+    function getCategoryPath(id) {
+      const names = [];
+      let current = getCategoryById(id);
+      while (current) {
+        names.unshift(current.name);
+        current = current.parentId ? getCategoryById(current.parentId) : null;
+      }
+      return names.join(" › ");
+    }
+
+    function formatTypeLabel(type) {
+      if (type === "film") return "Film";
+      if (type === "serie") return "Serie";
+      if (type === "doku") return "Dokumentation";
+      return type;
+    }
+
+    async function fetchPosterUrl(title, type) { return null; }
+
+    function renderCategoryOptionsForType(type, selectedId = null) {
+      entryCategoryEl.innerHTML = '<option value="">Bitte wählen…</option>';
+      const rootId = getRootCategoryIdForType(type);
+      if (!rootId) return;
+
+      const subs = categories.filter(c => c.parentId === rootId);
+      subs.forEach(c => {
+        const option = document.createElement("option");
+        option.value = String(c.id);
+        option.textContent = c.name;
+        if (selectedId && Number(selectedId) === c.id) option.selected = true;
+        entryCategoryEl.appendChild(option);
+      });
+    }
+
+    // ---------- Fortschritt ----------
+    function updateProgressFields() {
+      const status = entryStatus.value;
+      const type = entryType.value;
+
+      progressWrapper.classList.add("hidden");
+      seriesProgress.classList.add("hidden");
+      seriesProgress2.classList.add("hidden");
+      movieProgress.classList.add("hidden");
+
+      if (status !== "am_schauen") {
+        entrySeason.value = "";
+        entryEpisode.value = "";
+        entryMinutes.value = "";
+        return;
+      }
+
+      progressWrapper.classList.remove("hidden");
+
+      if (type === "serie") {
+        seriesProgress.classList.remove("hidden");
+        seriesProgress2.classList.remove("hidden");
+        entryMinutes.value = "";
+      } else {
+        movieProgress.classList.remove("hidden");
+        entrySeason.value = "";
+        entryEpisode.value = "";
+      }
+    }
+
+    // ---------- Modal ----------
+    function openCreateModal() {
+      editingEntryId = null;
+      entryModalTitle.textContent = "Neuer Eintrag";
+      entryModalSubmit.textContent = "Eintrag speichern";
+      resetForm();
+      updateProgressFields();
+      entryModal.classList.remove("hidden");
+      entryModal.setAttribute("aria-hidden", "false");
+    }
+
+    function openEditModal(entry) {
+      editingEntryId = entry.id;
+      entryModalTitle.textContent = "Eintrag bearbeiten";
+      entryModalSubmit.textContent = "Eintrag aktualisieren";
+
+      entryTitle.value = entry.title;
+      entryType.value = entry.type;
+      entryStatus.value = entry.status;
+      entryRating.value = entry.rating != null ? entry.rating : "";
+      entryNote.value = entry.note || "";
+
+      entrySeason.value = entry.season != null ? entry.season : "";
+      entryEpisode.value = entry.episode != null ? entry.episode : "";
+      entryMinutes.value = entry.minutes != null ? entry.minutes : "";
+
+      renderCategoryOptionsForType(entry.type, entry.categoryId);
+      updateProgressFields();
+
+      entryModal.classList.remove("hidden");
+      entryModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      entryModal.classList.add("hidden");
+      entryModal.setAttribute("aria-hidden", "true");
+      resetForm();
+    }
+
+    // ---------- Sidebar Dropdown + Counts ----------
+    function renderCategories() {
+      categoryListEl.innerHTML = "";
+
+      const roots = categories.filter(c => c.parentId == null);
+      const subsByRoot = (rootId) => categories.filter(c => c.parentId === rootId);
+
+      function countEntriesForCategory(catId) {
+        const allowedIds = new Set();
+        function collect(id) {
+          allowedIds.add(id);
+          categories.filter(c => c.parentId === id).forEach(ch => collect(ch.id));
+        }
+        collect(catId);
+        return entries.filter(e => allowedIds.has(e.categoryId)).length;
+      }
+
+      roots.forEach(root => {
+        const isExpanded = expandedRoots.has(root.id);
+        const rootCount = countEntriesForCategory(root.id);
+
+        const rootBtn = document.createElement("button");
+        rootBtn.className =
+          "category-button root" + (root.id === selectedCategoryId ? " active" : "");
+
+        rootBtn.innerHTML = `
+          <span>${root.name}</span>
+          <span class="count ${rootCount === 0 ? "muted" : ""}">${rootCount}</span>
+          <span class="badge-count">${rootCount}</span>
+          <span class="chev">${isExpanded ? "▼" : "▶"}</span>
+        `;
+
+        rootBtn.addEventListener("click", () => {
+          if (expandedRoots.has(root.id)) expandedRoots.delete(root.id);
+          else expandedRoots.add(root.id);
+
+          selectedCategoryId = root.id;
+
+          renderCategories();
+          renderEntries();
+        });
+
+        categoryListEl.appendChild(rootBtn);
+
+        if (isExpanded) {
+          subsByRoot(root.id).forEach(sub => {
+            const subCount = countEntriesForCategory(sub.id);
+
+            const subBtn = document.createElement("button");
+            subBtn.className =
+              "category-button sub" + (sub.id === selectedCategoryId ? " active" : "");
+
+            subBtn.innerHTML = `
+              <span>${sub.name}</span>
+              <span class="count ${subCount === 0 ? "muted" : ""}">${subCount}</span>
+            `;
+
+            subBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              selectedCategoryId = sub.id;
+              renderCategories();
+              renderEntries();
+            });
+
+            categoryListEl.appendChild(subBtn);
+          });
+        }
+      });
+
+      // Desktop: "Alle Einträge" Count
+      const allCount = entries.length;
+      btnAllEl.innerHTML = `
+        <span>Alle Einträge</span>
+        <span class="count ${allCount === 0 ? "muted" : ""}">${allCount}</span>
+      `;
+      if (selectedCategoryId === null) btnAllEl.classList.add("active");
+      else btnAllEl.classList.remove("active");
+    }
+
+    // ---------- Entries ----------
+    function renderEntries() {
+      let visibleEntries = entries;
+
+      if (selectedCategoryId !== null) {
+        const allowedIds = new Set();
+        function collect(catId) {
+          allowedIds.add(catId);
+          categories.filter(c => c.parentId === catId).forEach(child => collect(child.id));
+        }
+        collect(selectedCategoryId);
+        visibleEntries = entries.filter(e => allowedIds.has(e.categoryId));
+      }
+
+      entriesListEl.innerHTML = "";
+      entriesTitleEl.textContent =
+        selectedCategoryId === null
+          ? "Alle Einträge"
+          : "Einträge in: " + getCategoryPath(selectedCategoryId);
+
+      entriesCountEl.textContent =
+        visibleEntries.length + " Eintrag" + (visibleEntries.length === 1 ? "" : "e");
+
+      if (visibleEntries.length === 0) {
+        const div = document.createElement("div");
+        div.className = "muted";
+        div.textContent = "Noch keine Einträge in dieser Kategorie.";
+        entriesListEl.appendChild(div);
+        return;
+      }
+
+      visibleEntries.forEach(entry => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        if (entry.posterUrl) {
+          const img = document.createElement("img");
+          img.src = entry.posterUrl;
+          img.alt = entry.title;
+          card.appendChild(img);
+        }
+
+        const content = document.createElement("div");
+        content.style.flex = "1";
+
+        const topLine = document.createElement("div");
+        topLine.className = "flex-between";
+
+        const titleEl = document.createElement("div");
+        titleEl.innerHTML =
+          '<span>' + entry.title + '</span><span class="badge">' +
+          formatTypeLabel(entry.type) + "</span>";
+        topLine.appendChild(titleEl);
+
+        const ratingEl = document.createElement("div");
+        ratingEl.className = "small";
+        if (entry.rating != null) ratingEl.textContent = "Rating: " + entry.rating + "/10";
+        topLine.appendChild(ratingEl);
+
+        const catLine = document.createElement("div");
+        catLine.className = "small";
+        catLine.textContent = getCategoryPath(entry.categoryId);
+
+        const statusLine = document.createElement("div");
+        statusLine.className = "status";
+        statusLine.textContent = "Status: " + entry.status.replace("_", " ");
+
+        content.appendChild(topLine);
+        content.appendChild(catLine);
+        content.appendChild(statusLine);
+
+        if (entry.status === "am_schauen") {
+          const prog = document.createElement("div");
+          prog.className = "small";
+          prog.style.marginTop = "2px";
+          if (entry.type === "serie" && (entry.season || entry.episode)) {
+            prog.textContent = `Fortschritt: Staffel ${entry.season ?? "?"}, Folge ${entry.episode ?? "?"}`;
+          } else if ((entry.type === "film" || entry.type === "doku") && entry.minutes) {
+            prog.textContent = `Fortschritt: ${entry.minutes} min`;
+          }
+          content.appendChild(prog);
+        }
+
+        if (entry.note) {
+          const noteEl = document.createElement("div");
+          noteEl.className = "small";
+          noteEl.textContent = entry.note;
+          noteEl.style.marginTop = "4px";
+          content.appendChild(noteEl);
+        }
+
+        card.appendChild(content);
+
+        const actions = document.createElement("div");
+        actions.style.display = "flex";
+        actions.style.flexDirection = "column";
+        actions.style.gap = "4px";
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Bearbeiten";
+        editBtn.className = "btn";
+        editBtn.style.fontSize = "10px";
+        editBtn.style.padding = "4px 6px";
+        editBtn.addEventListener("click", () => openEditModal(entry));
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Löschen";
+        deleteBtn.className = "btn btn-danger";
+        deleteBtn.style.fontSize = "10px";
+        deleteBtn.style.padding = "4px 6px";
+        deleteBtn.addEventListener("click", () => deleteEntry(entry));
+
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+        card.appendChild(actions);
+
+        entriesListEl.appendChild(card);
+      });
+    }
+
+    // ---------- Firestore ----------
+    async function loadEntries() {
+      const qEntries = query(entriesCollection, orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(qEntries);
+      entries = snapshot.docs.map(docSnap => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          title: data.title,
+          type: data.type,
+          status: data.status,
+          categoryId: Number(data.categoryId),
+          rating: data.rating ?? null,
+          note: data.note ?? "",
+          posterUrl: data.posterUrl ?? null,
+          season: data.season ?? null,
+          episode: data.episode ?? null,
+          minutes: data.minutes ?? null
+        };
+      });
+      renderCategories();
+      renderEntries();
+    }
+
+    async function deleteEntry(entry) {
+      const confirmDelete = confirm(`Eintrag "${entry.title}" wirklich löschen?`);
+      if (!confirmDelete) return;
+      await deleteDoc(doc(db, "entries", entry.id));
+      await loadEntries();
+    }
+
+    function resetForm() {
+      entryTitle.value = "";
+      entryRating.value = "";
+      entryNote.value = "";
+      entryStatus.value = "geplant";
+      entryType.value = "film";
+      entrySeason.value = "";
+      entryEpisode.value = "";
+      entryMinutes.value = "";
+      renderCategoryOptionsForType("film");
+      editingEntryId = null;
+      updateProgressFields();
+    }
+
+    // ---------- Events ----------
+    entryType.addEventListener("change", () => {
+      renderCategoryOptionsForType(entryType.value);
+      updateProgressFields();
+    });
+    entryStatus.addEventListener("change", updateProgressFields);
+
+    addEntryBtn.addEventListener("click", openCreateModal);
+    entryModalClose.addEventListener("click", closeModal);
+    entryModalCancel.addEventListener("click", closeModal);
+    entryModal.addEventListener("click", (e) => {
+      if (e.target === entryModal) closeModal();
+    });
+
+    entryForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const title = entryTitle.value.trim();
+      const type = entryType.value;
+      const status = entryStatus.value;
+      const categoryValue = entryCategoryEl.value;
+      const ratingValue = entryRating.value;
+      const note = entryNote.value.trim();
+
+      if (!title || !categoryValue) {
+        alert("Titel und Kategorie sind erforderlich.");
+        return;
+      }
+
+      const categoryId = Number(categoryValue);
+      const rating = ratingValue ? Number(ratingValue) : null;
+
+      let season = null, episode = null, minutes = null;
+      if (status === "am_schauen") {
+        if (type === "serie") {
+          season = entrySeason.value ? Number(entrySeason.value) : null;
+          episode = entryEpisode.value ? Number(entryEpisode.value) : null;
+        } else {
+          minutes = entryMinutes.value ? Number(entryMinutes.value) : null;
+        }
+      }
+
+      let posterUrl = null;
+      if (!editingEntryId) {
+        posterUrl = await fetchPosterUrl(title, type);
+      } else {
+        const old = entries.find(e => e.id === editingEntryId);
+        posterUrl = old?.posterUrl ?? null;
+      }
+
+      const payload = {
+        title,
+        type,
+        status,
+        categoryId,
+        rating,
+        note,
+        posterUrl,
+        season,
+        episode,
+        minutes
+      };
+
+      if (!editingEntryId) {
+        await addDoc(entriesCollection, {
+          ...payload,
+          createdAt: Date.now()
+        });
+      } else {
+        await updateDoc(doc(db, "entries", editingEntryId), payload);
+      }
+
+      closeModal();
+      await loadEntries();
+    });
+
+    btnAllEl.addEventListener("click", () => {
+      selectedCategoryId = null;
+      renderCategories();
+      renderEntries();
+    });
+
+    // ---------- Init ----------
+    renderCategories();
+    renderCategoryOptionsForType("film");
+    updateProgressFields();
+    loadEntries();
+  </script>
+</body>
+</html>

@@ -50,10 +50,7 @@
       backdrop-filter: blur(6px);
     }
 
-    .main {
-      flex: 1;
-      padding: 18px;
-    }
+    .main { flex: 1; padding: 18px; }
 
     h1 {
       font-size: 20px;
@@ -175,7 +172,7 @@
       cursor: pointer;
     }
 
-    /* ---------- Kategorien Desktop ---------- */
+    /* ---------- Kategorien ---------- */
     .category-button {
       width: 100%;
       text-align: left;
@@ -185,6 +182,7 @@
       color: var(--white);
       font-size: 12px;
       padding: 8px 10px;
+      padding-right: 44px; /* Platz für Pfeil + Zahl */
       border-radius: 12px;
       margin-bottom: 8px;
       cursor: pointer;
@@ -196,6 +194,7 @@
       box-shadow:
         0 8px 18px rgba(0,0,0,0.45),
         inset 0 0 0 1px rgba(255,255,255,0.03);
+      overflow: hidden;
     }
     .category-button:hover { filter: brightness(1.05); }
     .category-button.active {
@@ -203,44 +202,83 @@
         0 10px 22px rgba(0,0,0,0.55),
         0 0 0 2px rgba(146,179,111,0.6);
     }
-    .category-button .chev { font-size: 10px; opacity: 0.8; }
 
+    .category-button.root { font-weight: 800; }
     .category-button.sub {
       background: rgba(21,36,23,0.9);
       font-weight: 700;
     }
 
-    .count {
-      font-size: 10px;
-      color: var(--muted);
-      margin-left: auto;
-      padding-left: 8px;
-      flex-shrink: 0;
-      font-weight: 800;
-    }
-    .count.muted { color: var(--muted-2); }
-
-    .badge-count {
-      display: none;
+    /* Chevron absolut rechts mittig */
+    .category-button .chev{
       position: absolute;
-      right: 8px;
-      top: -6px;
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      color: var(--white);
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    /* Zahl links vom Chevron */
+    .corner-count{
+      position: absolute;
+      top: 8px;
+      right: 34px;
       font-size: 11px;
       font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid rgba(255,255,255,0.9);
-      background:
-        radial-gradient(120% 120% at 20% 10%, #bddd8a 0%, #7ea65b 45%, #3a5a40 100%);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+      color: var(--white);
+      opacity: .9;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+    .corner-count.muted{ opacity: .55; }
+
+    /* ---------- Inline-Liste unter Sub-Genre (Mobile Accordion) ---------- */
+    .sub-entries {
+      margin: 6px 0 12px;
+      padding: 8px;
+      border-radius: 14px;
+      background: rgba(8,14,9,0.7);
+      border: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
     }
 
-    /* ---------- Cards ---------- */
+    .mini-card {
+      background: rgba(18,31,20,0.92);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 10px;
+      align-items: center;
+      font-size: 13px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+    }
+    .mini-title {
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .mini-meta {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+    .mini-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .mini-actions .btn {
+      font-size: 10px;
+      padding: 5px 7px;
+      border-radius: 9px;
+    }
+
+    /* ---------- Cards (Desktop / Global-Liste) ---------- */
     .card {
       background: rgba(18,31,20,0.92);
       border-radius: 18px;
@@ -422,10 +460,10 @@
       .category-button.root{
         aspect-ratio:1/1;
         width:100%;
-        color:var(--white);
         border:none;
         border-radius:22px;
         padding:14px;
+        padding-right: 44px;
         font-size:18px;
         font-weight:800;
         display:flex;
@@ -447,14 +485,13 @@
           0 0 0 2px rgba(146,179,111,0.7),
           inset 0 0 0 1px rgba(255,255,255,0.09);
       }
-      .category-button.root .badge-count{ display:flex; }
-      .category-button.root .count{ display:none; }
-      .badge-count{
-        right:10px; top:10px;
-        width:28px; height:28px;
-        font-size:12px; font-weight:900;
-      }
       .category-button.root .chev{ display:none; }
+
+      .corner-count{
+        top: 10px;
+        right: 12px; /* root hat kein chevron -> Zahl darf direkt an den Rand */
+        font-size: 13px;
+      }
 
       .category-button.sub{
         grid-column:1/-1;
@@ -463,6 +500,7 @@
         border:1px solid rgba(255,255,255,0.06);
         border-radius:16px;
         padding:14px;
+        padding-right: 44px; /* Platz für chevron+zahl */
         font-size:15px;
         font-weight:700;
         display:flex;
@@ -470,11 +508,19 @@
         align-items:center;
         min-height:54px;
         box-shadow:0 8px 18px rgba(0,0,0,0.5);
+        position: relative;
       }
       .category-button.sub.active{
         background: linear-gradient(90deg, #3f5f43 0%, #6c9152 55%, #8fb56a 100%);
         border-color:transparent;
         box-shadow: 0 10px 22px rgba(0,0,0,0.6), 0 0 0 2px rgba(146,179,111,0.55);
+      }
+
+      /* Für Sub: Zahl wieder links vom Chevron */
+      .category-button.sub .corner-count{
+        right: 34px;
+        top: 10px;
+        font-size: 12px;
       }
 
       .search-wrap{
@@ -531,7 +577,6 @@
 
       <div id="entriesList" class="mt-8"></div>
 
-      <!-- Statistik unten -->
       <div id="statsBox" class="stats">
         <div class="stat-card">
           <div class="stat-title">Geschaut – Filme</div>
@@ -704,6 +749,8 @@
 
     let expandedRoots = new Set();
 
+    const isMobile = () => window.matchMedia("(max-width: 800px)").matches;
+
     // DOM
     const categoryListEl   = document.getElementById("categoryList");
     const entryCategoryEl  = document.getElementById("entryCategory");
@@ -854,8 +901,8 @@
       entryNote.value = entry.note || "";
 
       entrySeason.value = entry.season != null ? entry.season : "";
-      entryEpisode.value = entry.episode != null ? entry.episode : "";
-      entryMinutes.value = entry.minutes != null ? entry.minutes : "";
+      entryEpisode.value = entry.episode ?? "";
+      entryMinutes.value = entry.minutes ?? "";
 
       renderCategoryOptionsForType(entry.type, entry.categoryId);
       updateProgressFields();
@@ -868,6 +915,66 @@
       entryModal.classList.add("hidden");
       entryModal.setAttribute("aria-hidden", "true");
       resetForm();
+    }
+
+    function entriesForExactCategory(catId){
+      return entries.filter(e => e.categoryId === catId);
+    }
+
+    // ✅ Mobile Inline-Liste inkl. Fortschritt
+    function renderSubEntriesInline(catId){
+      const list = entriesForExactCategory(catId);
+      const wrap = document.createElement("div");
+      wrap.className = "sub-entries";
+
+      if (list.length === 0){
+        wrap.innerHTML = `<div class="muted">Noch nichts hier.</div>`;
+        return wrap;
+      }
+
+      list.forEach(entry => {
+        const item = document.createElement("div");
+        item.className = "mini-card";
+
+        let progressText = "";
+        if (entry.status === "am_schauen") {
+          if (entry.type === "serie" && (entry.season || entry.episode)) {
+            progressText = `Fortschritt: Staffel ${entry.season ?? "?"}, Folge ${entry.episode ?? "?"}`;
+          } else if ((entry.type === "film" || entry.type === "doku") && entry.minutes) {
+            progressText = `Fortschritt: ${entry.minutes} min`;
+          }
+        }
+
+        const left = document.createElement("div");
+        left.innerHTML = `
+          <div class="mini-title">${entry.title}</div>
+          <div class="mini-meta">${formatTypeLabel(entry.type)} · ${entry.status.replace("_"," ")}</div>
+          ${progressText ? `<div class="mini-meta" style="margin-top:2px">${progressText}</div>` : ""}
+          ${entry.note ? `<div class="mini-meta" style="margin-top:2px">${entry.note}</div>` : ""}
+        `;
+
+        const actions = document.createElement("div");
+        actions.className = "mini-actions";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "btn";
+        editBtn.textContent = "Bearbeiten";
+        editBtn.addEventListener("click", () => openEditModal(entry));
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "btn btn-danger";
+        delBtn.textContent = "Löschen";
+        delBtn.addEventListener("click", () => deleteEntry(entry));
+
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+
+        item.appendChild(left);
+        item.appendChild(actions);
+        wrap.appendChild(item);
+      });
+
+      return wrap;
     }
 
     function renderCategories() {
@@ -896,8 +1003,7 @@
 
         rootBtn.innerHTML = `
           <span>${root.name}</span>
-          <span class="count ${rootCount === 0 ? "muted" : ""}">${rootCount}</span>
-          <span class="badge-count">${rootCount}</span>
+          <span class="corner-count ${rootCount===0 ? "muted":""}">${rootCount}</span>
           <span class="chev">${isExpanded ? "▼" : "▶"}</span>
         `;
 
@@ -922,7 +1028,8 @@
 
             subBtn.innerHTML = `
               <span>${sub.name}</span>
-              <span class="count ${subCount === 0 ? "muted" : ""}">${subCount}</span>
+              <span class="corner-count ${subCount===0 ? "muted":""}">${subCount}</span>
+              <span class="chev"></span>
             `;
 
             subBtn.addEventListener("click", (e) => {
@@ -933,6 +1040,14 @@
             });
 
             categoryListEl.appendChild(subBtn);
+
+            // ✅ MOBILE: Inline-Liste nur wenn keine Suche/Filter aktiv
+            const noSearchActive =
+              !searchText.trim() && !onlyAmSchauen && searchCategoryId == null;
+
+            if (isMobile() && noSearchActive && sub.id === selectedCategoryId){
+              categoryListEl.appendChild(renderSubEntriesInline(sub.id));
+            }
           });
         }
       });
@@ -940,7 +1055,7 @@
       const allCount = entries.length;
       btnAllEl.innerHTML = `
         <span>Alle Einträge</span>
-        <span class="count ${allCount === 0 ? "muted" : ""}">${allCount}</span>
+        <span class="corner-count ${allCount===0 ? "muted":""}">${allCount}</span>
       `;
       if (selectedCategoryId === null) btnAllEl.classList.add("active");
       else btnAllEl.classList.remove("active");
@@ -948,16 +1063,23 @@
 
     function renderStats() {
       const watched = entries.filter(e => e.status === "fertig");
-      const films  = watched.filter(e => e.type === "film").length;
-      const series = watched.filter(e => e.type === "serie").length;
-      const dokus  = watched.filter(e => e.type === "doku").length;
-
-      statFilmsEl.textContent  = films;
-      statSeriesEl.textContent = series;
-      statDokusEl.textContent  = dokus;
+      statFilmsEl.textContent  = watched.filter(e => e.type === "film").length;
+      statSeriesEl.textContent = watched.filter(e => e.type === "serie").length;
+      statDokusEl.textContent  = watched.filter(e => e.type === "doku").length;
     }
 
     function renderEntries() {
+      // ✅ Mobile + keine Suche/Filter: globale Liste ausblenden
+      const noSearchActive =
+        !searchText.trim() && !onlyAmSchauen && searchCategoryId == null;
+
+      if (isMobile() && noSearchActive){
+        entriesListEl.innerHTML = "";
+        entriesListEl.style.display = "none";
+        return;
+      }
+      entriesListEl.style.display = "block";
+
       let visibleEntries = entries;
       const activeCategoryId =
         searchCategoryId != null ? searchCategoryId : selectedCategoryId;
@@ -1105,7 +1227,7 @@
     }
 
     async function loadEntries() {
-      const qEntries = query(entriesCollection, orderBy("createdAt", "desc"));
+      const qEntries = query(entriesCollection, orderBy("createdAt","desc"));
       const snapshot = await getDocs(qEntries);
       entries = snapshot.docs.map(docSnap => {
         const data = docSnap.data();
@@ -1165,17 +1287,20 @@
 
     searchInputEl.addEventListener("input", () => {
       searchText = searchInputEl.value;
+      renderCategories();
       renderEntries();
     });
 
     searchCategoryEl.addEventListener("change", () => {
       const val = searchCategoryEl.value;
       searchCategoryId = val ? Number(val) : null;
+      renderCategories();
       renderEntries();
     });
 
     filterAmSchauenEl.addEventListener("change", () => {
       onlyAmSchauen = filterAmSchauenEl.checked;
+      renderCategories();
       renderEntries();
     });
 
@@ -1215,10 +1340,7 @@
         posterUrl = old?.posterUrl ?? null;
       }
 
-      const payload = {
-        title, type, status, categoryId, rating, note, posterUrl,
-        season, episode, minutes
-      };
+      const payload = { title, type, status, categoryId, rating, note, posterUrl, season, episode, minutes };
 
       if (!editingEntryId) {
         await addDoc(entriesCollection, { ...payload, createdAt: Date.now() });
@@ -1232,6 +1354,11 @@
 
     btnAllEl.addEventListener("click", () => {
       selectedCategoryId = null;
+      renderCategories();
+      renderEntries();
+    });
+
+    window.addEventListener("resize", () => {
       renderCategories();
       renderEntries();
     });

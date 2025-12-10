@@ -5,28 +5,15 @@
   <title>Watchlist – Filme, Serien & Dokus</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 
     :root{
-      --olive-950:#070b08;
-      --olive-900:#0f1b12;
-      --olive-850:#122015;
-      --olive-800:#152417;
-      --olive-700:#1c2f1f;
-      --olive-600:#233a26;
-      --olive-500:#2b4530;
-      --olive-400:#3b5a40;
-      --olive-300:#5a7d46;
-      --olive-glow:#92b36f;
-      --white:#f8fafc;
-      --muted:rgba(248,250,252,0.75);
-      --muted-2:rgba(248,250,252,0.55);
+      --olive-950:#070b08; --olive-900:#0f1b12; --olive-850:#122015; --olive-800:#152417;
+      --olive-700:#1c2f1f; --olive-600:#233a26; --olive-500:#2b4530; --olive-400:#3b5a40;
+      --olive-300:#5a7d46; --olive-glow:#92b36f;
+      --white:#f8fafc; --muted:rgba(248,250,252,0.75); --muted-2:rgba(248,250,252,0.55);
       --line:rgba(255,255,255,0.08);
+      --danger-1:#ff9b9b; --danger-2:#e33a3a; --danger-3:#7f1212;
     }
 
     body {
@@ -42,277 +29,99 @@
 
     /* ---------- Layout Desktop ---------- */
     .sidebar {
-      width: 280px;
-      border-right: 1px solid var(--line);
-      padding: 18px;
-      background:
-        linear-gradient(180deg, rgba(15,27,18,0.9), rgba(7,11,8,0.9));
+      width: 280px; border-right: 1px solid var(--line); padding: 18px;
+      background: linear-gradient(180deg, rgba(15,27,18,0.9), rgba(7,11,8,0.9));
       backdrop-filter: blur(6px);
     }
-
     .main { flex: 1; padding: 18px; }
 
-    h1 {
-      font-size: 20px;
-      margin-bottom: 12px;
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
-
-    h2 {
-      font-size: 16px;
-      margin-bottom: 8px;
-      font-weight: 700;
-      letter-spacing: .2px;
-    }
+    h1 { font-size: 20px; margin-bottom: 12px; font-weight: 800; }
+    h2 { font-size: 16px; margin-bottom: 8px; font-weight: 700; }
 
     .btn {
       border: 1px solid var(--line);
       background: linear-gradient(180deg, #3f5f43, #2b4530);
       color: var(--white);
-      padding: 7px 11px;
-      border-radius: 10px;
-      font-size: 12px;
-      cursor: pointer;
+      padding: 7px 11px; border-radius: 10px; font-size: 12px; cursor: pointer;
       box-shadow: 0 6px 14px rgba(0,0,0,0.35);
     }
     .btn:hover { filter: brightness(1.05); }
 
+    /* runde Icon-Buttons */
     .btn-icon {
       border: 1px solid var(--line);
       background:
         radial-gradient(120% 120% at 20% 10%, #a8c67a 0%, #5a7d46 45%, #2b4530 100%);
       color: var(--white);
-      width: 30px;
-      height: 30px;
+      width: 30px; height: 30px;
       border-radius: 999px;
-      font-size: 18px;
+      font-size: 16px;
       line-height: 1;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       box-shadow: 0 8px 18px rgba(0,0,0,0.45);
     }
     .btn-icon:hover { filter: brightness(1.05); }
 
-    .btn-danger {
-      background: linear-gradient(180deg,#b91c1c,#7f1212);
-      border-color: rgba(255,255,255,0.1);
+    /* ✅ Filter löschen – länglich, rot */
+    .btn-clear-filters{
+      border: 1px solid rgba(255,255,255,0.18);
+      background: linear-gradient(180deg, var(--danger-1), var(--danger-2) 45%, var(--danger-3));
+      color: white;
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+      white-space: nowrap;
     }
+    .btn-clear-filters:hover{ filter: brightness(1.05); }
+
+    .btn-danger { background: linear-gradient(180deg,#b91c1c,#7f1212); }
 
     .input, .select {
-      width: 100%;
-      padding: 7px 9px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: rgba(12,20,14,0.95);
-      color: var(--white);
-      font-size: 12px;
-      margin-bottom: 6px;
+      width: 100%; padding: 7px 9px; border-radius: 10px; border: 1px solid var(--line);
+      background: rgba(12,20,14,0.95); color: var(--white); font-size: 12px; margin-bottom: 6px;
     }
-
-    .label {
-      font-size: 11px;
-      color: var(--muted-2);
-      margin-bottom: 2px;
-      display: block;
-      font-weight: 600;
-    }
-
-    .text-xs {
-      font-size: 10px;
-      color: var(--muted-2);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin: 10px 0 6px;
-    }
-
-    /* ---------- Search ---------- */
-    .search-wrap {
-      display: grid;
-      grid-template-columns: 2fr 1fr auto;
-      gap: 8px;
-      align-items: center;
-      margin: 8px 0 12px;
-      padding: 10px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.06);
-      border-radius: 14px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-      backdrop-filter: blur(6px);
-    }
-
-    .search-input, .search-select {
-      width: 100%;
-      padding: 9px 11px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(15,27,18,0.95);
-      color: var(--white);
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .search-input::placeholder { color: var(--muted-2); font-weight: 600; }
-
-    .toggle {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--white);
-      white-space: nowrap;
-      user-select: none;
-      font-weight: 700;
-    }
-    .toggle input {
-      width: 18px;
-      height: 18px;
-      accent-color: #8fb56a;
-      cursor: pointer;
-    }
+    .label { font-size: 11px; color: var(--muted-2); margin-bottom: 2px; display: block; font-weight: 600; }
+    .text-xs { font-size: 10px; color: var(--muted-2); text-transform: uppercase; letter-spacing: 0.06em; margin: 10px 0 6px; }
 
     /* ---------- Kategorien ---------- */
     .category-button {
-      width: 100%;
-      text-align: left;
-      border: 1px solid var(--line);
-      background:
-        radial-gradient(140% 140% at 15% 10%, #3f5f43 0%, #2a452f 45%, #152417 100%);
-      color: var(--white);
-      font-size: 12px;
-      padding: 8px 10px;
-      padding-right: 44px; /* Platz für Pfeil + Zahl */
-      border-radius: 12px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      position: relative;
-      box-shadow:
-        0 8px 18px rgba(0,0,0,0.45),
-        inset 0 0 0 1px rgba(255,255,255,0.03);
-      overflow: hidden;
+      width: 100%; text-align: left; border: 1px solid var(--line);
+      background: radial-gradient(140% 140% at 15% 10%, #3f5f43 0%, #2a452f 45%, #152417 100%);
+      color: var(--white); font-size: 12px; padding: 8px 10px; padding-right: 44px;
+      border-radius: 12px; margin-bottom: 8px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; gap: 6px;
+      position: relative; box-shadow: 0 8px 18px rgba(0,0,0,0.45); overflow: hidden;
     }
     .category-button:hover { filter: brightness(1.05); }
-    .category-button.active {
-      box-shadow:
-        0 10px 22px rgba(0,0,0,0.55),
-        0 0 0 2px rgba(146,179,111,0.6);
-    }
+    .category-button.active { box-shadow: 0 10px 22px rgba(0,0,0,0.55), 0 0 0 2px rgba(146,179,111,0.6); }
 
     .category-button.root { font-weight: 800; }
-    .category-button.sub {
-      background: rgba(21,36,23,0.9);
-      font-weight: 700;
-    }
+    .category-button.sub { background: rgba(21,36,23,0.9); font-weight: 700; }
+    .category-button.subroot { background: rgba(18,31,20,0.95); font-weight: 800; }
 
-    /* Chevron absolut rechts mittig */
     .category-button .chev{
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 11px;
-      opacity: 0.85;
-      pointer-events: none;
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      font-size: 11px; opacity: 0.85; pointer-events: none;
     }
-
-    /* Zahl links vom Chevron */
     .corner-count{
-      position: absolute;
-      top: 8px;
-      right: 34px;
-      font-size: 11px;
-      font-weight: 900;
-      color: var(--white);
-      opacity: .9;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-      pointer-events: none;
+      position: absolute; top: 8px; right: 34px;
+      font-size: 11px; font-weight: 900; color: var(--white); opacity: .9;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6); pointer-events: none;
     }
     .corner-count.muted{ opacity: .55; }
 
-    /* ---------- Inline-Liste unter Sub-Genre (Mobile Accordion) ---------- */
-    .sub-entries {
-      margin: 6px 0 12px;
-      padding: 8px;
-      border-radius: 14px;
-      background: rgba(8,14,9,0.7);
-      border: 1px solid var(--line);
-      display: grid;
-      gap: 8px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
-    }
-
-    .mini-card {
-      background: rgba(18,31,20,0.92);
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      padding: 10px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 6px 10px;
-      align-items: center;
-      font-size: 13px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
-    }
-    .mini-title {
-      font-weight: 900;
-      font-size: 14px;
-      line-height: 1.2;
-    }
-    .mini-meta {
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.25;
-    }
-    .mini-actions {
-      display: flex;
-      gap: 6px;
-    }
-    .mini-actions .btn {
-      font-size: 10px;
-      padding: 5px 7px;
-      border-radius: 9px;
-    }
-
-    /* ---------- Cards (Desktop / Global-Liste) ---------- */
+    /* ---------- Cards ---------- */
     .card {
-      background: rgba(18,31,20,0.92);
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      padding: 14px;
-      margin-bottom: 12px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      font-size: 13px;
-      box-shadow:
-        0 10px 22px rgba(0,0,0,0.55),
-        inset 0 0 0 1px rgba(255,255,255,0.02);
+      background: rgba(18,31,20,0.92); border-radius: 18px; border: 1px solid var(--line);
+      padding: 14px; margin-bottom: 12px; display: flex; gap: 12px; align-items: flex-start;
+      font-size: 13px; box-shadow: 0 10px 22px rgba(0,0,0,0.55);
       backdrop-filter: blur(6px);
     }
-
-    .card img {
-      width: 64px;
-      height: 96px;
-      object-fit: cover;
-      border-radius: 12px;
-      flex-shrink: 0;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.55);
-    }
-
-    .badge {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      margin-left: 6px;
-      font-weight: 800;
-    }
-
+    .badge { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 800; }
     .status { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
     .small { font-size: 11px; color: var(--muted); }
     .muted { font-size: 12px; color: var(--muted-2); font-style: italic; margin-top: 6px; }
@@ -321,102 +130,57 @@
     .flex-between { display: flex; justify-content: space-between; align-items: center; }
     .mt-8 { margin-top: 8px; }
     .mt-12 { margin-top: 12px; }
-    .gap-8 { gap: 8px; }
+    .gap-6 { gap: 6px; }
 
     .form-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;
     }
-
     .hidden { display: none; }
 
     /* ---------- Stats Box ---------- */
     .stats {
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.06);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-      backdrop-filter: blur(6px);
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      margin-top: 14px; padding: 12px; border-radius: 14px; border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06); box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
     }
     .stat-card{
-      background: rgba(15,27,18,0.95);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
-      text-align: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+      background: rgba(15,27,18,0.95); border: 1px solid var(--line); border-radius: 12px;
+      padding: 10px; text-align: center;
     }
-    .stat-title{
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--muted);
-      letter-spacing: .3px;
-    }
-    .stat-value{
-      margin-top: 4px;
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--white);
+    .stat-title{ font-size: 12px; font-weight: 800; color: var(--muted); }
+    .stat-value{ margin-top: 4px; font-size: 20px; font-weight: 900; color: var(--white); }
+
+    /* ✅ FIX: Mobile-Stats standardmäßig ausblenden (Web/Desktop) */
+    #statsBoxMobile{
+      display: none;
     }
 
     /* ---------- Modal ---------- */
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 18, 12, 0.85);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
+      position: fixed; inset: 0; background: rgba(10, 18, 12, 0.85);
+      display: flex; align-items: center; justify-content: center; z-index: 50;
     }
-
     .modal {
-      background: rgba(10,18,12,0.98);
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      padding: 16px;
-      max-width: 520px;
-      width: 100%;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-      color: var(--white);
-      backdrop-filter: blur(8px);
+      background: rgba(10,18,12,0.98); border-radius: 14px; border: 1px solid var(--line);
+      padding: 16px; max-width: 520px; width: 100%; color: var(--white);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
     }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .modal-title { font-size: 16px; font-weight: 800; }
-
-    .modal-close {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      font-size: 18px;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
+    .modal-close { border: none; background: transparent; color: var(--muted); font-size: 18px; cursor: pointer; line-height: 1; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
     .modal-backdrop.hidden { display: none; }
 
+    /* Suche Toggle */
+    .toggle {
+      display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800;
+      background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+      padding: 8px 10px; border-radius: 10px; margin-top: 6px;
+    }
+    .toggle input { width: 18px; height: 18px; accent-color: #8fb56a; cursor: pointer; }
+
     /* =========================================================
-       ========== MOBILE – FLUENT OLIVE GRID ==========
+       ========== MOBILE ==========
        ========================================================= */
     @media (max-width: 800px) {
       body{ flex-direction: column; }
@@ -424,126 +188,102 @@
       .sidebar{
         width:100%;
         border:none;
-        padding:18px 16px 10px;
+        padding:96px 16px 14px;
         background:transparent;
       }
+      .main{
+        padding:8px 16px 22px;
+      }
+
       h1{ display:none; }
       #btnAll, .text-xs{ display:none; }
 
-      .main{ padding:8px 16px 22px; }
+      /* ✅ nur mobil sichtbar */
+      #statsBoxMobile{
+        display: grid;
+        margin-top: 0;
+        margin-bottom: 14px;
+      }
 
       #addEntryBtn{
-        position:fixed;
-        top:14px;
-        right:14px;
-        z-index:90;
-        width:58px;
-        height:58px;
-        font-size:30px;
-        color:var(--white);
-        background:
-          radial-gradient(120% 120% at 20% 10%, #a8c67a 0%, #5a7d46 45%, #2b4530 100%);
+        position:fixed; top:14px; right:14px; z-index:90; width:58px; height:58px;
+        font-size:30px; color:var(--white);
+        background: radial-gradient(120% 120% at 20% 10%, #a8c67a 0%, #5a7d46 45%, #2b4530 100%);
         border:1px solid rgba(255,255,255,0.22);
-        box-shadow:
-          0 14px 30px rgba(0,0,0,0.6),
-          inset 0 0 0 1px rgba(255,255,255,0.15);
-        backdrop-filter: blur(6px);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.15);
+      }
+      #searchBtn{
+        position:fixed; top:14px; right:82px; z-index:90; width:58px; height:58px;
+        font-size:24px;
+        box-shadow: 0 14px 30px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.15);
+      }
+
+      #clearFiltersBtn{
+        position:fixed; top:18px; right:154px; z-index:90;
+        padding: 10px 12px;
+        font-size: 12px; font-weight: 900;
+        border-radius: 12px;
+        height: 50px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 14px 30px rgba(0,0,0,0.6);
       }
 
       #categoryList{
-        display:grid;
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:12px;
-        margin-top:10px;
+        display:grid; grid-template-columns:1fr; gap:10px; margin-top:6px;
       }
 
       .category-button.root{
-        aspect-ratio:1/1;
-        width:100%;
-        border:none;
-        border-radius:22px;
-        padding:14px;
-        padding-right: 44px;
-        font-size:18px;
-        font-weight:800;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        text-align:center;
-        position:relative;
-        background:
-          radial-gradient(140% 140% at 15% 10%, #3f5f43 0%, #2a452f 45%, #152417 100%);
-        box-shadow:
-          0 10px 22px rgba(0,0,0,0.55),
-          inset 0 0 0 1px rgba(255,255,255,0.06),
-          inset 0 10px 30px rgba(255,255,255,0.03);
+        width:100%; border-radius:16px; padding:16px 14px; padding-right:48px;
+        font-size:17px; min-height:58px; display:flex; align-items:center; justify-content:flex-start;
       }
-      .category-button.root.active{
-        transform:translateY(-1px);
-        box-shadow:
-          0 12px 26px rgba(0,0,0,0.6),
-          0 0 0 2px rgba(146,179,111,0.7),
-          inset 0 0 0 1px rgba(255,255,255,0.09);
-      }
-      .category-button.root .chev{ display:none; }
+      .category-button.root .chev{ display:block; font-size:12px; right:14px; }
+      .corner-count{ top:12px; right:38px; font-size:13px; }
 
-      .corner-count{
-        top: 10px;
-        right: 12px; /* root hat kein chevron -> Zahl darf direkt an den Rand */
-        font-size: 13px;
-      }
-
-      .category-button.sub{
+      .category-button.sub,
+      .category-button.subroot{
+        border-radius:14px; padding:14px 14px; padding-right:48px; font-size:15px; min-height:54px;
         grid-column:1/-1;
-        background:rgba(21,36,23,0.9);
-        color:var(--white);
-        border:1px solid rgba(255,255,255,0.06);
-        border-radius:16px;
-        padding:14px;
-        padding-right: 44px; /* Platz für chevron+zahl */
-        font-size:15px;
-        font-weight:700;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        min-height:54px;
-        box-shadow:0 8px 18px rgba(0,0,0,0.5);
-        position: relative;
       }
-      .category-button.sub.active{
+      .category-button.sub.active,
+      .category-button.subroot.active{
         background: linear-gradient(90deg, #3f5f43 0%, #6c9152 55%, #8fb56a 100%);
         border-color:transparent;
-        box-shadow: 0 10px 22px rgba(0,0,0,0.6), 0 0 0 2px rgba(146,179,111,0.55);
       }
 
-      /* Für Sub: Zahl wieder links vom Chevron */
-      .category-button.sub .corner-count{
-        right: 34px;
-        top: 10px;
-        font-size: 12px;
-      }
-
-      .search-wrap{
-        grid-template-columns:1fr;
-        border-radius:16px;
+      .category-button.sub .corner-count,
+      .category-button.subroot .corner-count{
+        right:38px; top:12px; font-size:12px;
       }
 
       #entriesTitle,#entriesCount{ display:none; }
-
       .form-grid{ grid-template-columns:1fr !important; }
-      .modal-backdrop{ align-items:flex-end; }
-      .modal{
-        max-width:none; width:100%;
-        border-radius:18px 18px 0 0;
-      }
 
-      .stats{ grid-template-columns: 1fr 1fr 1fr; }
+      .modal-backdrop{ align-items:flex-end; }
+      .modal{ max-width:none; width:100%; border-radius:18px 18px 0 0; }
+
+      #statsBoxDesktop{ display:none; }
     }
   </style>
 </head>
 <body>
 
   <div class="sidebar" id="sidebar">
+    <!-- ✅ Mobile Stats -->
+    <div id="statsBoxMobile" class="stats">
+      <div class="stat-card">
+        <div class="stat-title">Geschaut – Filme</div>
+        <div id="statFilmsMobile" class="stat-value">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Geschaut – Serien</div>
+        <div id="statSeriesMobile" class="stat-value">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Geschaut – Dokus</div>
+        <div id="statDokusMobile" class="stat-value">0</div>
+      </div>
+    </div>
+
     <h1>Watchlist Kategorien</h1>
 
     <button id="btnAll" class="category-button active">
@@ -558,43 +298,77 @@
     <section class="mt-12">
       <div class="flex-between">
         <h2 id="entriesTitle">Alle Einträge</h2>
-        <div class="flex gap-8" style="align-items: center;">
+        <div class="flex gap-6" style="align-items:center;">
           <div id="entriesCount" class="small">0 Einträge</div>
-          <button id="addEntryBtn" class="btn-icon" title="Neuen Eintrag hinzufügen">+</button>
+
+          <button id="clearFiltersBtn" class="btn-clear-filters hidden"
+                  title="Filter löschen" aria-label="Filter löschen">Filter löschen</button>
+
+          <button id="searchBtn" class="btn-icon" title="Suche öffnen" aria-label="Suche öffnen">🔍</button>
+
+          <button id="addEntryBtn" class="btn-icon" title="Neuen Eintrag hinzufügen" aria-label="Neuen Eintrag hinzufügen">+</button>
         </div>
       </div>
 
-      <div class="search-wrap">
-        <input id="searchInput" class="search-input" placeholder="Suche nach Titel…" />
-        <select id="searchCategory" class="search-select">
+      <div id="entriesList" class="mt-8"></div>
+
+      <!-- Desktop Stats -->
+      <div id="statsBoxDesktop" class="stats">
+        <div class="stat-card">
+          <div class="stat-title">Geschaut – Filme</div>
+          <div id="statFilmsDesktop" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Geschaut – Serien</div>
+          <div id="statSeriesDesktop" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Geschaut – Dokus</div>
+          <div id="statDokusDesktop" class="stat-value">0</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Search Modal -->
+  <div id="searchModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Suche & Filter</div>
+        <button id="searchModalClose" class="modal-close" aria-label="Schließen">&times;</button>
+      </div>
+
+      <div>
+        <label class="label" for="searchInput">Titel</label>
+        <input id="searchInput" class="input" placeholder="Suche nach Titel…" />
+
+        <label class="label" for="searchType">Typ</label>
+        <select id="searchType" class="select">
+          <option value="">Alle Typen</option>
+          <option value="film">Film</option>
+          <option value="serie">Serie</option>
+          <option value="anime">Anime</option>
+          <option value="doku">Dokumentation</option>
+        </select>
+
+        <label class="label" for="searchCategory">Kategorie</label>
+        <select id="searchCategory" class="select">
           <option value="">Alle Kategorien</option>
         </select>
+
         <label class="toggle">
           <input type="checkbox" id="filterAmSchauen" />
           nur „Am Schauen“
         </label>
       </div>
 
-      <div id="entriesList" class="mt-8"></div>
-
-      <div id="statsBox" class="stats">
-        <div class="stat-card">
-          <div class="stat-title">Geschaut – Filme</div>
-          <div id="statFilms" class="stat-value">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title">Geschaut – Serien</div>
-          <div id="statSeries" class="stat-value">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title">Geschaut – Dokus</div>
-          <div id="statDokus" class="stat-value">0</div>
-        </div>
+      <div class="modal-footer">
+        <button id="searchModalOk" class="btn" type="button">Fertig</button>
       </div>
-    </section>
+    </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Entry Modal -->
   <div id="entryModal" class="modal-backdrop hidden" aria-hidden="true">
     <div class="modal">
       <div class="modal-header">
@@ -613,6 +387,7 @@
             <select id="entryType" class="select">
               <option value="film">Film</option>
               <option value="serie">Serie</option>
+              <option value="anime">Anime</option>
               <option value="doku">Dokumentation</option>
             </select>
           </div>
@@ -660,9 +435,7 @@
           <button type="button" id="entryModalCancel" class="btn btn-danger" style="background:#111827;border:1px solid #1f2937;">
             Abbrechen
           </button>
-          <button type="submit" id="entryModalSubmit" class="btn">
-            Eintrag speichern
-          </button>
+          <button type="submit" id="entryModalSubmit" class="btn">Eintrag speichern</button>
         </div>
       </form>
     </div>
@@ -671,15 +444,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
     import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      query,
-      orderBy,
-      updateDoc,
-      deleteDoc,
-      doc
+      getFirestore, collection, addDoc, getDocs, query, orderBy, updateDoc, deleteDoc, doc
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -714,17 +479,32 @@
       { id: 21, name: "Disney-Filme",    parentId: 1 },
       { id: 22, name: "Pixar-Filme",     parentId: 1 },
 
-      { id: 30, name: "Drama",           parentId: 2 },
-      { id: 31, name: "Komödie",         parentId: 2 },
-      { id: 32, name: "Action",          parentId: 2 },
-      { id: 33, name: "Krimi",           parentId: 2 },
-      { id: 34, name: "Horror",          parentId: 2 },
-      { id: 35, name: "Science-Fiction", parentId: 2 },
-      { id: 36, name: "Fantasy",         parentId: 2 },
-      { id: 37, name: "Romance",         parentId: 2 },
-      { id: 38, name: "Abstrakt",        parentId: 2 },
-      { id: 39, name: "Thriller",        parentId: 2 },
-      { id: 40, name: "Musical",         parentId: 2 },
+      { id: 23, name: "Serien", parentId: 2 },
+      { id: 24, name: "Anime",  parentId: 2 },
+
+      { id: 130, name: "Drama",           parentId: 23 },
+      { id: 131, name: "Komödie",         parentId: 23 },
+      { id: 132, name: "Action",          parentId: 23 },
+      { id: 133, name: "Krimi",           parentId: 23 },
+      { id: 134, name: "Horror",          parentId: 23 },
+      { id: 135, name: "Science-Fiction", parentId: 23 },
+      { id: 136, name: "Fantasy",         parentId: 23 },
+      { id: 137, name: "Romance",         parentId: 23 },
+      { id: 138, name: "Abstrakt",        parentId: 23 },
+      { id: 139, name: "Thriller",        parentId: 23 },
+      { id: 140, name: "Musical",         parentId: 23 },
+
+      { id: 230, name: "Drama",           parentId: 24 },
+      { id: 231, name: "Komödie",         parentId: 24 },
+      { id: 232, name: "Action",          parentId: 24 },
+      { id: 233, name: "Krimi",           parentId: 24 },
+      { id: 234, name: "Horror",          parentId: 24 },
+      { id: 235, name: "Science-Fiction", parentId: 24 },
+      { id: 236, name: "Fantasy",         parentId: 24 },
+      { id: 237, name: "Romance",         parentId: 24 },
+      { id: 238, name: "Abstrakt",        parentId: 24 },
+      { id: 239, name: "Thriller",        parentId: 24 },
+      { id: 240, name: "Musical",         parentId: 24 },
 
       { id: 50, name: "Drama",           parentId: 3 },
       { id: 51, name: "Komödie",         parentId: 3 },
@@ -745,13 +525,12 @@
 
     let searchText = "";
     let searchCategoryId = null;
+    let searchType = "";
     let onlyAmSchauen = false;
 
     let expandedRoots = new Set();
+    let expandedSubRoots = new Set();
 
-    const isMobile = () => window.matchMedia("(max-width: 800px)").matches;
-
-    // DOM
     const categoryListEl   = document.getElementById("categoryList");
     const entryCategoryEl  = document.getElementById("entryCategory");
     const entriesListEl    = document.getElementById("entriesList");
@@ -760,7 +539,13 @@
     const btnAllEl         = document.getElementById("btnAll");
     const addEntryBtn      = document.getElementById("addEntryBtn");
 
+    const searchBtn        = document.getElementById("searchBtn");
+    const clearFiltersBtn  = document.getElementById("clearFiltersBtn");
+    const searchModal      = document.getElementById("searchModal");
+    const searchModalClose = document.getElementById("searchModalClose");
+    const searchModalOk    = document.getElementById("searchModalOk");
     const searchInputEl    = document.getElementById("searchInput");
+    const searchTypeEl     = document.getElementById("searchType");
     const searchCategoryEl = document.getElementById("searchCategory");
     const filterAmSchauenEl= document.getElementById("filterAmSchauen");
 
@@ -784,10 +569,13 @@
     const entryEpisode     = document.getElementById("entryEpisode");
     const entryMinutes     = document.getElementById("entryMinutes");
 
-    // Stats DOM
-    const statFilmsEl  = document.getElementById("statFilms");
-    const statSeriesEl = document.getElementById("statSeries");
-    const statDokusEl  = document.getElementById("statDokus");
+    const statFilmsDesktop  = document.getElementById("statFilmsDesktop");
+    const statSeriesDesktop = document.getElementById("statSeriesDesktop");
+    const statDokusDesktop  = document.getElementById("statDokusDesktop");
+
+    const statFilmsMobile  = document.getElementById("statFilmsMobile");
+    const statSeriesMobile = document.getElementById("statSeriesMobile");
+    const statDokusMobile  = document.getElementById("statDokusMobile");
 
     function getCategoryById(id) {
       return categories.find(c => c.id === id) || null;
@@ -795,7 +583,7 @@
 
     function getRootCategoryIdForType(type) {
       if (type === "film") return 1;
-      if (type === "serie") return 2;
+      if (type === "serie" || type === "anime") return 2;
       if (type === "doku") return 3;
       return null;
     }
@@ -813,23 +601,33 @@
     function formatTypeLabel(type) {
       if (type === "film") return "Film";
       if (type === "serie") return "Serie";
+      if (type === "anime") return "Anime";
       if (type === "doku") return "Dokumentation";
       return type;
     }
-
-    async function fetchPosterUrl(title, type) { return null; }
 
     function renderCategoryOptionsForType(type, selectedId = null) {
       entryCategoryEl.innerHTML = '<option value="">Bitte wählen…</option>';
       const rootId = getRootCategoryIdForType(type);
       if (!rootId) return;
 
-      const subs = categories.filter(c => c.parentId === rootId);
-      subs.forEach(c => {
+      if (type === "film" || type === "doku") {
+        categories.filter(c => c.parentId === rootId).forEach(c => {
+          const option = document.createElement("option");
+          option.value = String(c.id);
+          option.textContent = c.name;
+          if (selectedId && Number(selectedId) === c.id) option.selected = true;
+          entryCategoryEl.appendChild(option);
+        });
+        return;
+      }
+
+      const subRootId = (type === "anime") ? 24 : 23;
+      categories.filter(g => g.parentId === subRootId).forEach(g => {
         const option = document.createElement("option");
-        option.value = String(c.id);
-        option.textContent = c.name;
-        if (selectedId && Number(selectedId) === c.id) option.selected = true;
+        option.value = String(g.id);
+        option.textContent = g.name;
+        if (selectedId && Number(selectedId) === g.id) option.selected = true;
         entryCategoryEl.appendChild(option);
       });
     }
@@ -842,11 +640,19 @@
         optRoot.value = String(root.id);
         optRoot.textContent = root.name;
         searchCategoryEl.appendChild(optRoot);
+
         categories.filter(c => c.parentId === root.id).forEach(sub => {
           const opt = document.createElement("option");
           opt.value = String(sub.id);
           opt.textContent = "— " + sub.name;
           searchCategoryEl.appendChild(opt);
+
+          categories.filter(cc => cc.parentId === sub.id).forEach(gen => {
+            const opt2 = document.createElement("option");
+            opt2.value = String(gen.id);
+            opt2.textContent = "—— " + gen.name + (sub.id===24 ? " (Anime)" : "");
+            searchCategoryEl.appendChild(opt2);
+          });
         });
       });
     }
@@ -861,21 +667,19 @@
       movieProgress.classList.add("hidden");
 
       if (status !== "am_schauen") {
-        entrySeason.value = "";
-        entryEpisode.value = "";
-        entryMinutes.value = "";
+        entrySeason.value = ""; entryEpisode.value = ""; entryMinutes.value = "";
         return;
       }
 
       progressWrapper.classList.remove("hidden");
-      if (type === "serie") {
+
+      if (type === "serie" || type === "anime") {
         seriesProgress.classList.remove("hidden");
         seriesProgress2.classList.remove("hidden");
         entryMinutes.value = "";
       } else {
         movieProgress.classList.remove("hidden");
-        entrySeason.value = "";
-        entryEpisode.value = "";
+        entrySeason.value = ""; entryEpisode.value = "";
       }
     }
 
@@ -911,77 +715,60 @@
       entryModal.setAttribute("aria-hidden", "false");
     }
 
-    function closeModal() {
+    function closeEntryModal() {
       entryModal.classList.add("hidden");
       entryModal.setAttribute("aria-hidden", "true");
       resetForm();
     }
 
-    function entriesForExactCategory(catId){
-      return entries.filter(e => e.categoryId === catId);
+    function openSearchModal(){
+      searchInputEl.value = searchText;
+      searchTypeEl.value = searchType;
+      searchCategoryEl.value = searchCategoryId ? String(searchCategoryId) : "";
+      filterAmSchauenEl.checked = onlyAmSchauen;
+
+      searchModal.classList.remove("hidden");
+      searchModal.setAttribute("aria-hidden","false");
+      searchInputEl.focus();
     }
 
-    // ✅ Mobile Inline-Liste inkl. Fortschritt
-    function renderSubEntriesInline(catId){
-      const list = entriesForExactCategory(catId);
-      const wrap = document.createElement("div");
-      wrap.className = "sub-entries";
+    function closeSearchModal(){
+      searchModal.classList.add("hidden");
+      searchModal.setAttribute("aria-hidden","true");
 
-      if (list.length === 0){
-        wrap.innerHTML = `<div class="muted">Noch nichts hier.</div>`;
-        return wrap;
-      }
+      renderCategories();
+      renderEntries();
+      updateClearFiltersButton();
+    }
 
-      list.forEach(entry => {
-        const item = document.createElement("div");
-        item.className = "mini-card";
+    function filtersActive(){
+      return !!searchText.trim() || !!searchType || searchCategoryId != null || onlyAmSchauen;
+    }
 
-        let progressText = "";
-        if (entry.status === "am_schauen") {
-          if (entry.type === "serie" && (entry.season || entry.episode)) {
-            progressText = `Fortschritt: Staffel ${entry.season ?? "?"}, Folge ${entry.episode ?? "?"}`;
-          } else if ((entry.type === "film" || entry.type === "doku") && entry.minutes) {
-            progressText = `Fortschritt: ${entry.minutes} min`;
-          }
-        }
+    function updateClearFiltersButton(){
+      if(filtersActive()) clearFiltersBtn.classList.remove("hidden");
+      else clearFiltersBtn.classList.add("hidden");
+    }
 
-        const left = document.createElement("div");
-        left.innerHTML = `
-          <div class="mini-title">${entry.title}</div>
-          <div class="mini-meta">${formatTypeLabel(entry.type)} · ${entry.status.replace("_"," ")}</div>
-          ${progressText ? `<div class="mini-meta" style="margin-top:2px">${progressText}</div>` : ""}
-          ${entry.note ? `<div class="mini-meta" style="margin-top:2px">${entry.note}</div>` : ""}
-        `;
+    function clearFilters(){
+      searchText = "";
+      searchType = "";
+      searchCategoryId = null;
+      onlyAmSchauen = false;
 
-        const actions = document.createElement("div");
-        actions.className = "mini-actions";
+      searchInputEl.value = "";
+      searchTypeEl.value = "";
+      searchCategoryEl.value = "";
+      filterAmSchauenEl.checked = false;
 
-        const editBtn = document.createElement("button");
-        editBtn.className = "btn";
-        editBtn.textContent = "Bearbeiten";
-        editBtn.addEventListener("click", () => openEditModal(entry));
-
-        const delBtn = document.createElement("button");
-        delBtn.className = "btn btn-danger";
-        delBtn.textContent = "Löschen";
-        delBtn.addEventListener("click", () => deleteEntry(entry));
-
-        actions.appendChild(editBtn);
-        actions.appendChild(delBtn);
-
-        item.appendChild(left);
-        item.appendChild(actions);
-        wrap.appendChild(item);
-      });
-
-      return wrap;
+      renderCategories();
+      renderEntries();
+      updateClearFiltersButton();
     }
 
     function renderCategories() {
       categoryListEl.innerHTML = "";
-
       const roots = categories.filter(c => c.parentId == null);
-      const subsByRoot = (rootId) => categories.filter(c => c.parentId === rootId);
 
       function countEntriesForCategory(catId) {
         const allowedIds = new Set();
@@ -998,58 +785,85 @@
         const rootCount = countEntriesForCategory(root.id);
 
         const rootBtn = document.createElement("button");
-        rootBtn.className =
-          "category-button root" + (root.id === selectedCategoryId ? " active" : "");
-
+        rootBtn.className = "category-button root" + (root.id === selectedCategoryId ? " active" : "");
         rootBtn.innerHTML = `
           <span>${root.name}</span>
           <span class="corner-count ${rootCount===0 ? "muted":""}">${rootCount}</span>
           <span class="chev">${isExpanded ? "▼" : "▶"}</span>
         `;
-
         rootBtn.addEventListener("click", () => {
           if (expandedRoots.has(root.id)) expandedRoots.delete(root.id);
           else expandedRoots.add(root.id);
-
           selectedCategoryId = root.id;
           renderCategories();
           renderEntries();
+          updateClearFiltersButton();
         });
-
         categoryListEl.appendChild(rootBtn);
+        if (!isExpanded) return;
 
-        if (isExpanded) {
-          subsByRoot(root.id).forEach(sub => {
-            const subCount = countEntriesForCategory(sub.id);
+        const children = categories.filter(c => c.parentId === root.id);
 
-            const subBtn = document.createElement("button");
-            subBtn.className =
-              "category-button sub" + (sub.id === selectedCategoryId ? " active" : "");
+        children.forEach(child => {
+          const childHasKids = categories.some(x => x.parentId === child.id);
+          const isChildExpanded = expandedSubRoots.has(child.id);
+          const childCount = countEntriesForCategory(child.id);
 
-            subBtn.innerHTML = `
-              <span>${sub.name}</span>
-              <span class="corner-count ${subCount===0 ? "muted":""}">${subCount}</span>
-              <span class="chev"></span>
-            `;
+          const childBtn = document.createElement("button");
+          childBtn.className =
+            "category-button " + (childHasKids ? "subroot" : "sub") +
+            (child.id === selectedCategoryId ? " active" : "");
 
-            subBtn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              selectedCategoryId = sub.id;
+          childBtn.innerHTML = `
+            <span>${child.name}</span>
+            <span class="corner-count ${childCount===0 ? "muted":""}">${childCount}</span>
+            <span class="chev">${childHasKids ? (isChildExpanded ? "▼" : "▶") : ""}</span>
+          `;
+
+          childBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (childHasKids) {
+              if (expandedSubRoots.has(child.id)) expandedSubRoots.delete(child.id);
+              else expandedSubRoots.add(child.id);
+              selectedCategoryId = child.id;
               renderCategories();
               renderEntries();
-            });
-
-            categoryListEl.appendChild(subBtn);
-
-            // ✅ MOBILE: Inline-Liste nur wenn keine Suche/Filter aktiv
-            const noSearchActive =
-              !searchText.trim() && !onlyAmSchauen && searchCategoryId == null;
-
-            if (isMobile() && noSearchActive && sub.id === selectedCategoryId){
-              categoryListEl.appendChild(renderSubEntriesInline(sub.id));
+              updateClearFiltersButton();
+              return;
             }
+            selectedCategoryId = child.id;
+            renderCategories();
+            renderEntries();
+            updateClearFiltersButton();
           });
-        }
+
+          categoryListEl.appendChild(childBtn);
+
+          if (childHasKids && isChildExpanded) {
+            const genres = categories.filter(g => g.parentId === child.id);
+            genres.forEach(gen => {
+              const genCount = countEntriesForCategory(gen.id);
+
+              const genBtn = document.createElement("button");
+              genBtn.className = "category-button sub" + (gen.id === selectedCategoryId ? " active" : "");
+              genBtn.innerHTML = `
+                <span>${gen.name}</span>
+                <span class="corner-count ${genCount===0 ? "muted":""}">${genCount}</span>
+                <span class="chev"></span>
+              `;
+
+              genBtn.addEventListener("click", (ev) => {
+                ev.stopPropagation();
+                selectedCategoryId = gen.id;
+                renderCategories();
+                renderEntries();
+                updateClearFiltersButton();
+              });
+
+              categoryListEl.appendChild(genBtn);
+            });
+          }
+        });
       });
 
       const allCount = entries.length;
@@ -1063,26 +877,22 @@
 
     function renderStats() {
       const watched = entries.filter(e => e.status === "fertig");
-      statFilmsEl.textContent  = watched.filter(e => e.type === "film").length;
-      statSeriesEl.textContent = watched.filter(e => e.type === "serie").length;
-      statDokusEl.textContent  = watched.filter(e => e.type === "doku").length;
+      const films  = watched.filter(e => e.type === "film").length;
+      const series = watched.filter(e => e.type === "serie" || e.type==="anime").length;
+      const dokus  = watched.filter(e => e.type === "doku").length;
+
+      statFilmsDesktop.textContent = films;
+      statSeriesDesktop.textContent = series;
+      statDokusDesktop.textContent = dokus;
+
+      statFilmsMobile.textContent = films;
+      statSeriesMobile.textContent = series;
+      statDokusMobile.textContent = dokus;
     }
 
     function renderEntries() {
-      // ✅ Mobile + keine Suche/Filter: globale Liste ausblenden
-      const noSearchActive =
-        !searchText.trim() && !onlyAmSchauen && searchCategoryId == null;
-
-      if (isMobile() && noSearchActive){
-        entriesListEl.innerHTML = "";
-        entriesListEl.style.display = "none";
-        return;
-      }
-      entriesListEl.style.display = "block";
-
       let visibleEntries = entries;
-      const activeCategoryId =
-        searchCategoryId != null ? searchCategoryId : selectedCategoryId;
+      const activeCategoryId = searchCategoryId != null ? searchCategoryId : selectedCategoryId;
 
       if (activeCategoryId !== null) {
         const allowedIds = new Set();
@@ -1096,21 +906,16 @@
 
       if (searchText.trim()) {
         const q = searchText.trim().toLowerCase();
-        visibleEntries = visibleEntries.filter(e =>
-          (e.title || "").toLowerCase().includes(q)
-        );
+        visibleEntries = visibleEntries.filter(e => (e.title || "").toLowerCase().includes(q));
       }
-
-      if (onlyAmSchauen) {
-        visibleEntries = visibleEntries.filter(e => e.status === "am_schauen");
-      }
+      if (searchType) visibleEntries = visibleEntries.filter(e => e.type === searchType);
+      if (onlyAmSchauen) visibleEntries = visibleEntries.filter(e => e.status === "am_schauen");
 
       entriesListEl.innerHTML = "";
-      entriesTitleEl.textContent =
-        activeCategoryId === null
-          ? "Alle Einträge"
-          : "Einträge in: " + getCategoryPath(activeCategoryId);
+      entriesListEl.style.display = "block";
 
+      entriesTitleEl.textContent =
+        activeCategoryId === null ? "Alle Einträge" : "Einträge in: " + getCategoryPath(activeCategoryId);
       entriesCountEl.textContent =
         visibleEntries.length + " Eintrag" + (visibleEntries.length === 1 ? "" : "e");
 
@@ -1119,19 +924,13 @@
         div.className = "muted";
         div.textContent = "Keine Treffer.";
         entriesListEl.appendChild(div);
+        updateClearFiltersButton();
         return;
       }
 
       visibleEntries.forEach(entry => {
         const card = document.createElement("div");
         card.className = "card";
-
-        if (entry.posterUrl) {
-          const img = document.createElement("img");
-          img.src = entry.posterUrl;
-          img.alt = entry.title;
-          card.appendChild(img);
-        }
 
         const content = document.createElement("div");
         content.style.flex = "1";
@@ -1147,28 +946,22 @@
 
         const ratingEl = document.createElement("div");
         ratingEl.className = "small";
-        if (entry.rating != null) ratingEl.textContent = "Rating: " + entry.rating + "/10";
+        if (entry.rating !=null) ratingEl.textContent="Rating: "+entry.rating+"/10";
         topLine.appendChild(ratingEl);
 
         const catLine = document.createElement("div");
-        catLine.className = "small";
-        catLine.textContent = getCategoryPath(entry.categoryId);
+        catLine.className="small";
+        catLine.textContent=getCategoryPath(entry.categoryId);
 
         const statusLine = document.createElement("div");
-        statusLine.className = "status";
-        const niceStatus = entry.status.replace("_", " ");
-        statusLine.innerHTML = `
+        statusLine.className="status";
+        const niceStatus=entry.status.replace("_"," ");
+        statusLine.innerHTML=`
           <span style="
-            display:inline-flex;
-            padding:4px 8px;
-            border-radius:999px;
-            font-size:11px;
-            font-weight:800;
-            background:${entry.status==="am_schauen" ? "rgba(146,179,111,0.18)" :
-                       entry.status==="fertig" ? "rgba(255,255,255,0.12)" :
-                       "rgba(255,255,255,0.08)"};
-            color:#f8fafc;
-          ">
+            display:inline-flex; padding:4px 8px; border-radius:999px; font-size:11px; font-weight:800;
+            background:${entry.status==="am_schauen"?"rgba(146,179,111,0.18)":
+                       entry.status==="fertig"?"rgba(255,255,255,0.12)":"rgba(255,255,255,0.08)"};
+            color:#f8fafc;">
             ${niceStatus}
           </span>
         `;
@@ -1177,46 +970,46 @@
         content.appendChild(catLine);
         content.appendChild(statusLine);
 
-        if (entry.status === "am_schauen") {
-          const prog = document.createElement("div");
-          prog.className = "small";
-          prog.style.marginTop = "2px";
-          if (entry.type === "serie" && (entry.season || entry.episode)) {
-            prog.textContent = `Fortschritt: Staffel ${entry.season ?? "?"}, Folge ${entry.episode ?? "?"}`;
-          } else if ((entry.type === "film" || entry.type === "doku") && entry.minutes) {
-            prog.textContent = `Fortschritt: ${entry.minutes} min`;
+        if (entry.status==="am_schauen"){
+          const prog=document.createElement("div");
+          prog.className="small";
+          prog.style.marginTop="2px";
+          if ((entry.type==="serie"||entry.type==="anime")&&(entry.season||entry.episode)){
+            prog.textContent=`Fortschritt: Staffel ${entry.season??"?"}, Folge ${entry.episode??"?"}`;
+          } else if ((entry.type==="film"||entry.type==="doku")&&entry.minutes){
+            prog.textContent=`Fortschritt: ${entry.minutes} min`;
           }
           content.appendChild(prog);
         }
 
-        if (entry.note) {
-          const noteEl = document.createElement("div");
-          noteEl.className = "small";
-          noteEl.textContent = entry.note;
-          noteEl.style.marginTop = "4px";
+        if (entry.note){
+          const noteEl=document.createElement("div");
+          noteEl.className="small";
+          noteEl.textContent=entry.note;
+          noteEl.style.marginTop="4px";
           content.appendChild(noteEl);
         }
 
         card.appendChild(content);
 
-        const actions = document.createElement("div");
-        actions.style.display = "flex";
-        actions.style.flexDirection = "column";
-        actions.style.gap = "6px";
+        const actions=document.createElement("div");
+        actions.style.display="flex";
+        actions.style.flexDirection="column";
+        actions.style.gap="6px";
 
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Bearbeiten";
-        editBtn.className = "btn";
-        editBtn.style.fontSize = "10px";
-        editBtn.style.padding = "5px 7px";
-        editBtn.addEventListener("click", () => openEditModal(entry));
+        const editBtn=document.createElement("button");
+        editBtn.textContent="Bearbeiten";
+        editBtn.className="btn";
+        editBtn.style.fontSize="10px";
+        editBtn.style.padding="5px 7px";
+        editBtn.addEventListener("click",()=>openEditModal(entry));
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Löschen";
-        deleteBtn.className = "btn btn-danger";
-        deleteBtn.style.fontSize = "10px";
-        deleteBtn.style.padding = "5px 7px";
-        deleteBtn.addEventListener("click", () => deleteEntry(entry));
+        const deleteBtn=document.createElement("button");
+        deleteBtn.textContent="Löschen";
+        deleteBtn.className="btn btn-danger";
+        deleteBtn.style.fontSize="10px";
+        deleteBtn.style.padding="5px 7px";
+        deleteBtn.addEventListener("click",()=>deleteEntry(entry));
 
         actions.appendChild(editBtn);
         actions.appendChild(deleteBtn);
@@ -1224,145 +1017,147 @@
 
         entriesListEl.appendChild(card);
       });
+
+      updateClearFiltersButton();
     }
 
-    async function loadEntries() {
-      const qEntries = query(entriesCollection, orderBy("createdAt","desc"));
-      const snapshot = await getDocs(qEntries);
-      entries = snapshot.docs.map(docSnap => {
-        const data = docSnap.data();
-        return {
-          id: docSnap.id,
-          title: data.title,
-          type: data.type,
-          status: data.status,
-          categoryId: Number(data.categoryId),
-          rating: data.rating ?? null,
-          note: data.note ?? "",
-          posterUrl: data.posterUrl ?? null,
-          season: data.season ?? null,
-          episode: data.episode ?? null,
-          minutes: data.minutes ?? null
+    async function loadEntries(){
+      const qEntries=query(entriesCollection,orderBy("createdAt","desc"));
+      const snapshot=await getDocs(qEntries);
+      entries=snapshot.docs.map(docSnap=>{
+        const data=docSnap.data();
+        return{
+          id:docSnap.id,title:data.title,type:data.type,status:data.status,
+          categoryId:Number(data.categoryId),
+          rating:data.rating??null,note:data.note??"",
+          posterUrl:data.posterUrl??null,
+          season:data.season??null,episode:data.episode??null,minutes:data.minutes??null
         };
       });
       renderSearchCategoryDropdown();
       renderCategories();
       renderEntries();
       renderStats();
+      updateClearFiltersButton();
     }
 
-    async function deleteEntry(entry) {
-      const confirmDelete = confirm(`Eintrag "${entry.title}" wirklich löschen?`);
-      if (!confirmDelete) return;
-      await deleteDoc(doc(db, "entries", entry.id));
+    async function deleteEntry(entry){
+      const confirmDelete=confirm(`Eintrag "${entry.title}" wirklich löschen?`);
+      if(!confirmDelete)return;
+      await deleteDoc(doc(db,"entries",entry.id));
       await loadEntries();
     }
 
-    function resetForm() {
-      entryTitle.value = "";
-      entryRating.value = "";
-      entryNote.value = "";
-      entryStatus.value = "geplant";
-      entryType.value = "film";
-      entrySeason.value = "";
-      entryEpisode.value = "";
-      entryMinutes.value = "";
+    function resetForm(){
+      entryTitle.value="";
+      entryRating.value="";
+      entryNote.value="";
+      entryStatus.value="geplant";
+      entryType.value="film";
+      entrySeason.value="";
+      entryEpisode.value="";
+      entryMinutes.value="";
       renderCategoryOptionsForType("film");
-      editingEntryId = null;
+      editingEntryId=null;
       updateProgressFields();
     }
 
-    entryType.addEventListener("change", () => {
+    /* ---------- Events ---------- */
+    addEntryBtn.addEventListener("click",openCreateModal);
+    entryModalClose.addEventListener("click",closeEntryModal);
+    entryModalCancel.addEventListener("click",closeEntryModal);
+    entryModal.addEventListener("click",(e)=>{ if(e.target===entryModal) closeEntryModal(); });
+
+    entryType.addEventListener("change",()=>{
       renderCategoryOptionsForType(entryType.value);
       updateProgressFields();
     });
-    entryStatus.addEventListener("change", updateProgressFields);
+    entryStatus.addEventListener("change",updateProgressFields);
 
-    addEntryBtn.addEventListener("click", openCreateModal);
-    entryModalClose.addEventListener("click", closeModal);
-    entryModalCancel.addEventListener("click", closeModal);
-    entryModal.addEventListener("click", (e) => {
-      if (e.target === entryModal) closeModal();
-    });
+    searchBtn.addEventListener("click",openSearchModal);
+    searchModalClose.addEventListener("click",closeSearchModal);
+    searchModalOk.addEventListener("click",closeSearchModal);
+    searchModal.addEventListener("click",(e)=>{ if(e.target===searchModal) closeSearchModal(); });
 
-    searchInputEl.addEventListener("input", () => {
-      searchText = searchInputEl.value;
+    clearFiltersBtn.addEventListener("click", clearFilters);
+
+    searchInputEl.addEventListener("input",()=>{
+      searchText=searchInputEl.value;
       renderCategories();
       renderEntries();
+      updateClearFiltersButton();
     });
-
-    searchCategoryEl.addEventListener("change", () => {
-      const val = searchCategoryEl.value;
-      searchCategoryId = val ? Number(val) : null;
+    searchTypeEl.addEventListener("change",()=>{
+      searchType=searchTypeEl.value;
       renderCategories();
       renderEntries();
+      updateClearFiltersButton();
     });
-
-    filterAmSchauenEl.addEventListener("change", () => {
-      onlyAmSchauen = filterAmSchauenEl.checked;
+    searchCategoryEl.addEventListener("change",()=>{
+      const val=searchCategoryEl.value;
+      searchCategoryId=val?Number(val):null;
       renderCategories();
       renderEntries();
+      updateClearFiltersButton();
+    });
+    filterAmSchauenEl.addEventListener("change",()=>{
+      onlyAmSchauen=filterAmSchauenEl.checked;
+      renderCategories();
+      renderEntries();
+      updateClearFiltersButton();
     });
 
-    entryForm.addEventListener("submit", async (e) => {
+    entryForm.addEventListener("submit",async(e)=>{
       e.preventDefault();
 
-      const title = entryTitle.value.trim();
-      const type = entryType.value;
-      const status = entryStatus.value;
-      const categoryValue = entryCategoryEl.value;
-      const ratingValue = entryRating.value;
-      const note = entryNote.value.trim();
+      const title=entryTitle.value.trim();
+      const type=entryType.value;
+      const status=entryStatus.value;
+      const categoryValue=entryCategoryEl.value;
+      const ratingValue=entryRating.value;
+      const note=entryNote.value.trim();
 
-      if (!title || !categoryValue) {
-        alert("Titel und Kategorie sind erforderlich.");
-        return;
-      }
+      if(!title||!categoryValue){ alert("Titel und Kategorie sind erforderlich."); return; }
 
-      const categoryId = Number(categoryValue);
-      const rating = ratingValue ? Number(ratingValue) : null;
+      const categoryId=Number(categoryValue);
+      const rating=ratingValue?Number(ratingValue):null;
 
-      let season = null, episode = null, minutes = null;
-      if (status === "am_schauen") {
-        if (type === "serie") {
-          season = entrySeason.value ? Number(entrySeason.value) : null;
-          episode = entryEpisode.value ? Number(entryEpisode.value) : null;
+      let season=null,episode=null,minutes=null;
+      if(status==="am_schauen"){
+        if(type==="serie"||type==="anime"){
+          season=entrySeason.value?Number(entrySeason.value):null;
+          episode=entryEpisode.value?Number(entryEpisode.value):null;
         } else {
-          minutes = entryMinutes.value ? Number(entryMinutes.value) : null;
+          minutes=entryMinutes.value?Number(entryMinutes.value):null;
         }
       }
 
-      let posterUrl = null;
-      if (!editingEntryId) {
-        posterUrl = await fetchPosterUrl(title, type);
+      const payload={ title,type,status,categoryId,rating,note,posterUrl:null,season,episode,minutes };
+
+      if(!editingEntryId){
+        await addDoc(entriesCollection,{...payload,createdAt:Date.now()});
       } else {
-        const old = entries.find(e => e.id === editingEntryId);
-        posterUrl = old?.posterUrl ?? null;
+        await updateDoc(doc(db,"entries",editingEntryId),payload);
       }
 
-      const payload = { title, type, status, categoryId, rating, note, posterUrl, season, episode, minutes };
-
-      if (!editingEntryId) {
-        await addDoc(entriesCollection, { ...payload, createdAt: Date.now() });
-      } else {
-        await updateDoc(doc(db, "entries", editingEntryId), payload);
-      }
-
-      closeModal();
+      closeEntryModal();
       await loadEntries();
     });
 
-    btnAllEl.addEventListener("click", () => {
-      selectedCategoryId = null;
+    btnAllEl.addEventListener("click",()=>{
+      selectedCategoryId=null;
       renderCategories();
       renderEntries();
+      updateClearFiltersButton();
     });
 
-    window.addEventListener("resize", () => {
+    window.addEventListener("resize",()=>{
       renderCategories();
       renderEntries();
+      updateClearFiltersButton();
     });
 
+    // Init
     renderSearchCategoryDropdown();
     renderCategories();
     renderCategoryOptionsForType("film");
